@@ -49,6 +49,7 @@ public class Weapon extends Token
 
   // line 44 "model.ump"
    public String toString(){
+	return null;
     
   }
 

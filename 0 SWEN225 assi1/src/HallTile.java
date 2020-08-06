@@ -1,3 +1,5 @@
+import java.awt.Point;
+
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.30.0.5099.60569f335 modeling language!*/
 
@@ -32,6 +34,7 @@ public class HallTile extends Tile
 
   // line 28 "model.ump"
   public String toString(){
+	return null;
     
   }
 
