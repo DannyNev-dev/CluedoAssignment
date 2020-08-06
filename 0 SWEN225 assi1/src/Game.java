@@ -1,11 +1,6 @@
-/*PLEASE DO NOT EDIT THIS CODE*/
-/*This code was generated using the UMPLE 1.30.0.5099.60569f335 modeling language!*/
-
-
+import java.awt.Point;
 import java.util.*;
 
-// line 67 "model.ump"
-// line 162 "model.ump"
 public class Game
 {
 
@@ -15,34 +10,69 @@ public class Game
 
   //Game Attributes
   private List<Card> envelope;
-  private List<String> accusations;
+  private List<List<String>> accusations;
 
   //Game Associations
   private Board board;
   private List<Player> players;
   private List<Tile> tiles;
   private List<Card> cards;
+  
+  final Point CHARACTERLOC[] = {
+		  new Point(0,9),
+		  new Point(0, 14),
+		  new Point(6, 23),
+		  new Point(19, 23),
+		  new Point(24, 7),
+		  new Point(17, 0)
+  };
+  final char[] CHARACTERSYMBOL = {
+		  's',
+		  'm',
+		  'w',
+		  'g',
+		  'k',
+		  'p',
+  };
+  final char[] WEAPONSYMBOL = {
+		  'c',
+		  'd',
+		  'l',
+		  'r',
+		  'o',
+		  'a'
+  };
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Game(Board aBoard, Player... allPlayers)
+  public Game(String boardData)
   {
     envelope = new ArrayList<Card>();
-    accusations = new ArrayList<String>();
-    if (!setBoard(aBoard))
-    {
-      throw new RuntimeException("Unable to create Game due to aBoard. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
+    accusations = new ArrayList<List<String>>();
+    //board = new Board();
     players = new ArrayList<Player>();
-    boolean didAddPlayers = setPlayers(allPlayers);
-    if (!didAddPlayers)
-    {
-      throw new RuntimeException("Unable to create Game, must have 3 to 6 players. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
     tiles = new ArrayList<Tile>();
     cards = new ArrayList<Card>();
+    System.out.println("Welcome to Cluedo");
+    System.out.println("How many players will there be this round?");
+    Scanner s = new Scanner(System.in);
+    int numPlayers = s.nextInt();
+    System.out.println("num = "+numPlayers);
+    for(int i = 0; i < 6; i++) {
+    	if(i <= numPlayers) {
+    		players.add(new Player(CHARACTERLOC[i], true, CHARACTERSYMBOL[i]));
+    	}
+    	else {
+    		players.add(new Player(CHARACTERLOC[i], false, CHARACTERSYMBOL[i]));
+    	}
+    }
+    createBoard(boardData);
+  }
+  
+  public static void main(String args[]){
+	  Game g = new Game(null);	    
   }
 
   //------------------------
@@ -63,12 +93,12 @@ public class Game
     return wasRemoved;
   }
   /* Code from template attribute_SetMany */
-  public boolean addAccusation(String aAccusation)
-  {
-    boolean wasAdded = false;
-    wasAdded = accusations.add(aAccusation);
-    return wasAdded;
-  }
+//  public boolean addAccusation(String aAccusation)
+//  {
+//    boolean wasAdded = false;
+//    wasAdded = accusations.add(aAccusation);
+//    return wasAdded;
+//  }
 
   public boolean removeAccusation(String aAccusation)
   {
@@ -107,11 +137,11 @@ public class Game
     return index;
   }
   /* Code from template attribute_GetMany */
-  public String getAccusation(int index)
-  {
-    String aAccusation = accusations.get(index);
-    return aAccusation;
-  }
+//  public String getAccusation(int index)
+//  {
+//    String aAccusation = accusations.get(index);
+//    return aAccusation;
+//  }
 
   public String[] getAccusations()
   {
@@ -494,9 +524,7 @@ public class Game
   }
 
   // line 74 "model.ump"
-  public void main(){
-    
-  }
+
 
   // line 76 "model.ump"
   public Card[] initDeck(){
@@ -516,8 +544,8 @@ public class Game
   }
 
   // line 79 "model.ump"
-  public void createBoard(){
-    
+  public void createBoard(String boardData) {
+	  ;
   }
 
   // line 81 "model.ump"

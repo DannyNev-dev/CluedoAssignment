@@ -16,8 +16,8 @@ public class Player extends Token
 
   //Player Attributes
   private Point location;
-  private boolean canWin;
-  private String character;
+  private boolean isActive = true;
+  private char character;
   private List<Card> hand;
 
   //Player Associations
@@ -27,11 +27,11 @@ public class Player extends Token
   // CONSTRUCTOR
   //------------------------
 
-  public Player(Point aLocation, boolean aCanWin, String aCharacter)
+  public Player(Point aLocation, boolean isActive, char aCharacter)
   {
     super();
     location = aLocation;
-    canWin = aCanWin;
+    isActive = isActive;
     character = aCharacter;
     hand = new ArrayList<Card>();
     cards = new ArrayList<Card>();
@@ -49,15 +49,15 @@ public class Player extends Token
     return wasSet;
   }
 
-  public boolean setCanWin(boolean aCanWin)
+  public boolean setIsActive(boolean aCanWin)
   {
     boolean wasSet = false;
-    canWin = aCanWin;
+    isActive = isActive;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setCharacter(String aCharacter)
+  public boolean setCharacter(char aCharacter)
   {
     boolean wasSet = false;
     character = aCharacter;
@@ -84,12 +84,12 @@ public class Player extends Token
     return location;
   }
 
-  public boolean getCanWin()
+  public boolean getIsActive()
   {
-    return canWin;
+    return isActive;
   }
 
-  public String getCharacter()
+  public char getCharacter()
   {
     return character;
   }
