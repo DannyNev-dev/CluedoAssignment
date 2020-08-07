@@ -19,6 +19,7 @@ public class Player extends Token
   private Point location;
   private char character;
   private boolean isActive;
+  private boolean canWin;
   private List<Card> hand;
 
   //Player Associations
@@ -37,12 +38,13 @@ public class Player extends Token
     cards = new ArrayList<Card>();
   }
 
-  public Player(Point aLocation, boolean isActive, char aCharacter)
+  public Player(Point aLocation, boolean isActive, char aCharacter, boolean canWin)
   {
     super();
     location = aLocation;
-    isActive = isActive;
+    this.isActive = isActive;
     character = aCharacter;
+    this.canWin = canWin;
     hand = new ArrayList<Card>();
     cards = new ArrayList<Card>();
   }
@@ -69,6 +71,11 @@ public class Player extends Token
     this.isActive = isActive;
     //wasSet = true;
    // return wasSet;
+  }
+  
+  public void setCanWin(boolean canWin)
+  {
+    this.canWin = canWin;
   }
 
   public boolean setCharacter(char aCharacter)

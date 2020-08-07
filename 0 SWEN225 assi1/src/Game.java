@@ -45,7 +45,6 @@ public class Game
   private Board board;
   private List<Tile> tiles;
   private List<Card> cards;
-  
 
   final static char[] WEAPONSYMBOL = {
 		  'c',
@@ -54,6 +53,18 @@ public class Game
 		  'r',
 		  'o',
 		  'a'
+  };
+  
+  final static char[] ROOMSYMBOL = {
+		  'K',
+		  'B',
+		  'C',
+		  'G',
+		  'Y',
+		  'S',
+		  'H',
+		  'L',
+		  'D'
   };
 
   //------------------------
@@ -77,6 +88,8 @@ public class Game
       throw e;
     }
 
+    
+    
     System.out.println("Welcome to Cluedo");
 
     //create players
@@ -90,17 +103,21 @@ public class Game
     for(int i = 0; i < 6; i++) {
     	if(i <= numPlayers) {
     	    PLAYERS[i].setIsActive(true);
+    	    PLAYERS[i].setCanWin(true);
     		//players.add(new Player(CHARACTERLOC[i], true, CHARACTERSYMBOL[i]));
     	}
     	else {
             PLAYERS[i].setIsActive(false);
+            PLAYERS[i].setCanWin(false);
     		//players.add(new Player(CHARACTERLOC[i], false, CHARACTERSYMBOL[i]));
     	}
     }
 
+    System.out.println();
     System.out.println("creating board...");
+    System.out.println();
     //set up board now
-    createBoard(boardData);
+    createBoard(boardData); 
   }
   
   public static void main(String[] args){
@@ -112,6 +129,8 @@ public class Game
       System.out.println("ERROR: board map file could not be read");
     }
 	//play game
+	
+	
   }
 
   /**

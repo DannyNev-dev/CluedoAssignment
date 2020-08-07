@@ -59,6 +59,12 @@ public class Board
           case 'm':
             tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[5]);
             break;
+          case '|': // door that can only be entered on the vertical
+        	  tiles[i][j] = new DoorTile(new Point(i, j), c, null);
+        	  break;
+          case '-': 
+        	  tiles[i][j] = new DoorTile(new Point(i, j), c, null);
+        	  break;
           default:  //for the room tiles
             tiles[i][j] = new RoomTile(new Point(i, j), c, null);
             break;
@@ -74,6 +80,11 @@ public class Board
     Collections.shuffle(weapons);
     //search for kitchen and add weapon to kitchen
     //TO DO HERE
+    //for each weapon place them in the first encountered tile of the room
+    for(int j = 0; j < 6; j++) {
+    	Point p = new Point(searchFor(Game.ROOMSYMBOL[j]));
+        tiles[(int) p.getX()][(int) p.getY()] = new RoomTile(p, Game.ROOMSYMBOL[j], weapons.get(j));
+    }
 
    /* tiles = new ArrayList<Tile>();
     weapons = new ArrayList<Weapon>();
@@ -90,6 +101,14 @@ public class Board
    * @return
    */
   private Point searchFor(char c) {
+	  for(int i = 0; i < 25; i++) {
+		  for(int j = 0; j < 24; j++) {
+			  if(tiles[i][j].getSymbol() == c) {
+				  return new Point(i, j);
+			  }
+		  }
+	  }
+	  System.out.println("ERROR: character not found in board");
     return null;
   }
 
