@@ -7,7 +7,7 @@ import java.awt.Point;
 
 // line 9 "model.ump"
 // line 111 "model.ump"
-public abstract class Tile
+public class Tile
 {
 
   //------------------------
@@ -20,17 +20,25 @@ public abstract class Tile
   private boolean isOccupied;
 
   //Tile Associations
-  private Token token;
+  private Token token = null;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Tile(Point aLocation, char aSymbol, boolean aIsOccupied)
+  public Tile(Point aLocation, char aSymbol)
   {
     location = aLocation;
     symbol = aSymbol;
-    isOccupied = aIsOccupied;
+    isOccupied = false;
+  }
+
+  //if token exists
+  public Tile(Point aLocation, char aSymbol, Token aToken) {
+    location = aLocation;
+    symbol = aSymbol;
+    token = aToken;
+    isOccupied = true;
   }
 
   //------------------------
@@ -66,8 +74,15 @@ public abstract class Tile
     return location;
   }
 
+  /**
+   * returns the current symbol in this tile to the board. if occupied by token, will print token's char instead
+   * @return
+   */
   public char getSymbol()
   {
+    if(token != null) {
+      return token.getSymbol();
+    }
     return symbol;
   }
 
@@ -105,6 +120,8 @@ public abstract class Tile
     token = null;
   }
 
-  public abstract String toString();
+  public String toString() {
+    return String.valueOf(symbol);
+  }
 
 }

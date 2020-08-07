@@ -18,9 +18,9 @@ public class RoomTile extends Tile
   // CONSTRUCTOR
   //------------------------
 
-  public RoomTile(Point aLocation, char aSymbol, boolean aIsOccupied)
+  public RoomTile(Point aLocation, char aSymbol, Token token)
   {
-    super(aLocation, aSymbol, aIsOccupied);
+    super(aLocation, aSymbol, token);
   }
 
   //------------------------
@@ -34,8 +34,7 @@ public class RoomTile extends Tile
 
   // line 22 "model.ump"
   public String toString(){
-	return null;
-    
+	return String.valueOf(super.getSymbol());
   }
 
 }

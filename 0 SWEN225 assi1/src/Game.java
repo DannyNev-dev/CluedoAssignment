@@ -1,5 +1,7 @@
 import java.awt.Point;
+import java.io.*;
 import java.util.*;
+
 
 public class Game
 {
@@ -13,28 +15,39 @@ public class Game
   private List<List<String>> accusations;
 
   //Game Associations
+
+ /* final Point CHARACTERLOC[] = {
+          new Point(0,9),
+          new Point(0, 14),
+          new Point(6, 23),
+          new Point(19, 23),
+          new Point(24, 7),
+          new Point(17, 0)
+  };
+  final char[] CHARACTERSYMBOL = {
+          's',
+          'm',
+          'w',
+          'g',
+          'k',
+          'p',
+  };*/
+
+  public static final Player PLAYERS[] = {
+          new Player(new Point(0, 9), 's'),   //Miss Scarlett
+          new Player(new Point(0, 14), 'm'),  //Colonel Mustard
+          new Player(new Point(6, 23), 'w'),  //Mrs White
+          new Player(new Point(19, 23), 'g'), //Mr Green
+          new Player(new Point(24, 7), 'k'),  //Mrs Peacock
+          new Player(new Point(17, 0), 'p')   //Professor Plum
+  };
+
   private Board board;
-  private List<Player> players;
   private List<Tile> tiles;
   private List<Card> cards;
   
-  final Point CHARACTERLOC[] = {
-		  new Point(0,9),
-		  new Point(0, 14),
-		  new Point(6, 23),
-		  new Point(19, 23),
-		  new Point(24, 7),
-		  new Point(17, 0)
-  };
-  final char[] CHARACTERSYMBOL = {
-		  's',
-		  'm',
-		  'w',
-		  'g',
-		  'k',
-		  'p',
-  };
-  final char[] WEAPONSYMBOL = {
+
+  final static char[] WEAPONSYMBOL = {
 		  'c',
 		  'd',
 		  'l',
@@ -47,50 +60,96 @@ public class Game
   // CONSTRUCTOR
   //------------------------
 
-  public Game(String boardData)
+  public Game() throws IOException
   {
     //initialise objects
     envelope = new ArrayList<Card>();
     accusations = new ArrayList<List<String>>();
-    players = new ArrayList<Player>();
+    //players = new ArrayList<Player>();
     tiles = new ArrayList<Tile>();
     cards = new ArrayList<Card>();
 
-    System.out.println("Welcome to Cluedo");
-    //create players
-    System.out.println("How many players will there be this round?");
-    Scanner s = new Scanner(System.in);
-    int numPlayers = s.nextInt();
-    System.out.println("num = "+numPlayers);
-    for(int i = 0; i < 6; i++) {
-    	if(i <= numPlayers) {
-    		players.add(new Player(CHARACTERLOC[i], true, CHARACTERSYMBOL[i]));
-    	}
-    	else {
-    		players.add(new Player(CHARACTERLOC[i], false, CHARACTERSYMBOL[i]));
-    	}
-    }
-    //read board map text file and create board from data
+    //read board file
+    String[] boardData;
     try {
-      BufferedReader br = new BufferedReader(new FileReader("boardMap.txt"));
-      //go through all lines of file and add it to string
-      StringBuilder sb = new StringBuilder();
-      String str = "";  //line read from file
-      while((str = br.readLine()) != null) {
-        System.out.println(str);
-        sb.append(str);
-      }
+      boardData = readBoardMapFile("src/boardMap");
     } catch(IOException e) {
-      System.out.println("Board map txt file not found");
-      return;
+      throw e;
     }
 
-    //print board
+    System.out.println("Welcome to Cluedo");
+
+    //create players
+    Scanner s = new Scanner(System.in);
+    int numPlayers = 0;
+    while(numPlayers < 3 || numPlayers > 6) {
+      System.out.println("How many players will there be this round?");
+      numPlayers = s.nextInt();
+    }
+
+    for(int i = 0; i < 6; i++) {
+    	if(i <= numPlayers) {
+    	    PLAYERS[i].setIsActive(true);
+    		//players.add(new Player(CHARACTERLOC[i], true, CHARACTERSYMBOL[i]));
+    	}
+    	else {
+            PLAYERS[i].setIsActive(false);
+    		//players.add(new Player(CHARACTERLOC[i], false, CHARACTERSYMBOL[i]));
+    	}
+    }
+
+    System.out.println("creating board...");
+    //set up board now
     createBoard(boardData);
   }
   
   public static void main(String[] args){
-	  Game g = new Game(null);	    
+    //set up game
+    Game game;
+	try {
+      game = new Game();
+    } catch(IOException e) {
+      System.out.println("ERROR: board map file could not be read");
+    }
+	//play game
+  }
+
+  /**
+   * Reads the board map file, TO DO: ADD TO UML
+   * @param fileName  name of file to read
+   * @return
+   */
+  private String[] readBoardMapFile(String fileName) throws IOException {
+    //read board map text file and create board from data
+    String[] data = new String[25];
+    try {
+      BufferedReader br = new BufferedReader(new FileReader(fileName));
+      //go through all lines of file and add it to string
+      String str = "";  //line read from file
+      int numRows = 0;
+      while((str = br.readLine()) != null) {
+        if(numRows > 25) {  //if greater than 25 rows, then is not right board
+          throw new IOException();
+        }
+        data[numRows] = str;
+        numRows++;
+      }
+    } catch(IOException e) {
+      throw e;
+    }
+    return data;
+  }
+
+  // line 79 "model.ump"
+  /**
+   * Setups and creates the board object to be used in the game
+   * @param[] boardData list of strings that contains the characters of the board
+   */
+  public void createBoard(String[] boardData) {
+    board = new Board(boardData);  //initialise board
+    board.printBoard();
+    //set up weapons for board
+
   }
 
   //------------------------
@@ -190,7 +249,7 @@ public class Game
     return board;
   }
   /* Code from template association_GetMany */
-  public Player getPlayer(int index)
+  /*ublic Player getPlayer(int index)
   {
     Player aPlayer = players.get(index);
     return aPlayer;
@@ -301,7 +360,7 @@ public class Game
     return 6;
   }
   /* Code from template association_AddUnidirectionalMN */
-  public boolean addPlayer(Player aPlayer)
+  /*public boolean addPlayer(Player aPlayer)
   {
     boolean wasAdded = false;
     if (players.contains(aPlayer)) { return false; }
@@ -331,7 +390,7 @@ public class Game
     return wasRemoved;
   }
   /* Code from template association_SetUnidirectionalMN */
-  public boolean setPlayers(Player... newPlayers)
+  /*public boolean setPlayers(Player... newPlayers)
   {
     boolean wasSet = false;
     ArrayList<Player> verifiedPlayers = new ArrayList<Player>();
@@ -355,7 +414,7 @@ public class Game
     return wasSet;
   }
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addPlayerAt(Player aPlayer, int index)
+  /*public boolean addPlayerAt(Player aPlayer, int index)
   {  
     boolean wasAdded = false;
     if(addPlayer(aPlayer))
@@ -536,7 +595,7 @@ public class Game
   public void delete()
   {
     board = null;
-    players.clear();
+   // players.clear();
     tiles.clear();
     cards.clear();
   }
@@ -559,11 +618,6 @@ public class Game
   public Card[] selectSolution(){
 	return null;
     
-  }
-
-  // line 79 "model.ump"
-  public void createBoard(String boardData) {
-	  ;
   }
 
   // line 81 "model.ump"

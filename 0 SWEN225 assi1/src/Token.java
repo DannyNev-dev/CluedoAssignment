@@ -5,7 +5,7 @@
 
 // line 37 "model.ump"
 // line 131 "model.ump"
-public class Token
+public abstract class Token
 {
 
   //------------------------
@@ -26,4 +26,5 @@ public class Token
   public void delete()
   {}
 
+  abstract public char getSymbol();
 }

@@ -47,6 +47,10 @@ public class Weapon extends Token
     super.delete();
   }
 
+  public char getSymbol() {
+    return name;
+  }
+
   // line 44 "model.ump"
    public String toString(){
 	return null;

@@ -15,9 +15,10 @@ public class Player extends Token
   //------------------------
 
   //Player Attributes
+
   private Point location;
-  private boolean isActive = true;
   private char character;
+  private boolean isActive;
   private List<Card> hand;
 
   //Player Associations
@@ -26,6 +27,15 @@ public class Player extends Token
   //------------------------
   // CONSTRUCTOR
   //------------------------
+  public Player(Point aLocation, char aCharacter)
+  {
+    super();
+    location = aLocation;
+   // isActive = isActive;
+    character = aCharacter;
+    hand = new ArrayList<Card>();
+    cards = new ArrayList<Card>();
+  }
 
   public Player(Point aLocation, boolean isActive, char aCharacter)
   {
@@ -35,6 +45,10 @@ public class Player extends Token
     character = aCharacter;
     hand = new ArrayList<Card>();
     cards = new ArrayList<Card>();
+  }
+
+  public char getSymbol() {
+    return character;
   }
 
   //------------------------
@@ -49,12 +63,12 @@ public class Player extends Token
     return wasSet;
   }
 
-  public boolean setIsActive(boolean aCanWin)
+  public void setIsActive(boolean isActive)
   {
-    boolean wasSet = false;
-    isActive = isActive;
-    wasSet = true;
-    return wasSet;
+   // boolean wasSet = false;
+    this.isActive = isActive;
+    //wasSet = true;
+   // return wasSet;
   }
 
   public boolean setCharacter(char aCharacter)
@@ -219,7 +233,7 @@ public class Player extends Token
 
   // line 94 "model.ump"
    public String toString(){
-	return null;
+	return String.valueOf(character);
     
   }
 

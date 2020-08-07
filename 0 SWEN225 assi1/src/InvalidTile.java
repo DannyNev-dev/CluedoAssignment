@@ -18,10 +18,11 @@ public class InvalidTile extends Tile
   // CONSTRUCTOR
   //------------------------
 
-  public InvalidTile(Point aLocation, char aSymbol, boolean aIsOccupied)
+  public InvalidTile(Point aLocation, char aSymbol, Token token)
   {
-    super(aLocation, aSymbol, aIsOccupied);
+    super(aLocation, aSymbol, token);
   }
+
 
   //------------------------
   // INTERFACE
@@ -34,7 +35,7 @@ public class InvalidTile extends Tile
 
   // line 34 "model.ump"
   public String toString(){
-	return null;
+	return ".";
     
   }
 

@@ -18,9 +18,9 @@ public class HallTile extends Tile
   // CONSTRUCTOR
   //------------------------
 
-  public HallTile(Point aLocation, char aSymbol, boolean aIsOccupied)
+  public HallTile(Point aLocation, Token token)
   {
-    super(aLocation, aSymbol, aIsOccupied);
+    super(aLocation, '*', token);
   }
 
   //------------------------
@@ -34,7 +34,7 @@ public class HallTile extends Tile
 
   // line 28 "model.ump"
   public String toString(){
-	return null;
+	return "*";
     
   }
 

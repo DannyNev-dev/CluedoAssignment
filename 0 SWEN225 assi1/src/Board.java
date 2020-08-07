@@ -2,7 +2,10 @@
 /*This code was generated using the UMPLE 1.30.0.5099.60569f335 modeling language!*/
 
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collector;
 
 // line 2 "model.ump"
 // line 104 "model.ump"
@@ -14,21 +17,94 @@ public class Board
   //------------------------
 
   //Board Associations
-  private List<Tile> tiles;
+  private Tile[][] tiles;
   private List<Weapon> weapons;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Board()
+  public Board(String[] boardData)
   {
-    tiles = new ArrayList<Tile>();
+    tiles = new Tile[25][24];
+    //add data to each tile
+    for(int i = 0; i < tiles.length; i++) {
+      Tile[] row = tiles[i];
+     // System.out.println("row: "+boardData[i]);
+      for(int j = 0; j < row.length; j++) { //is row.length-1 because want to ignore \n
+        //check which tile is it
+        char c = boardData[i].charAt(j);
+        switch(c) {
+          case '.': //invalid tile
+            tiles[i][j] = new InvalidTile(new Point(i, j), c, null);
+            break;
+          case '*': //for the hallway tiles and the hall tiles that are where the characters first start
+            tiles[i][j] = new HallTile(new Point(i, j), null);
+            break;
+          case 'w':
+            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[0]);
+            break;
+          case 'g':
+            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[1]);
+            break;
+          case 'k':
+            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[2]);
+            break;
+          case 'p':
+            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[3]);
+            break;
+          case 's':
+            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[4]);
+            break;
+          case 'm':
+            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[5]);
+            break;
+          default:  //for the room tiles
+            tiles[i][j] = new RoomTile(new Point(i, j), c, null);
+            break;
+        }
+      }
+    }
+    weapons = new ArrayList<>();
+    //initialise weapons
+    for(int i = 0; i < 6; i++) {
+      weapons.add(new Weapon(Game.WEAPONSYMBOL[i]));
+    }
+    //shuffle weapon's list and add to rooms
+    Collections.shuffle(weapons);
+    //search for kitchen and add weapon to kitchen
+    //TO DO HERE
+
+   /* tiles = new ArrayList<Tile>();
     weapons = new ArrayList<Weapon>();
     boolean didAddWeapons = setWeapons(allWeapons);
     if (!didAddWeapons)
     {
       throw new RuntimeException("Unable to create Board, must have 6 weapons. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }*/
+  }
+
+  /**
+   * searches for first occurance of the character in the board
+   * @param c character to search for
+   * @return
+   */
+  private Point searchFor(char c) {
+    return null;
+  }
+
+
+  // line 6 "model.ump"
+
+  /**
+   * prints current state of board
+   */
+  public void printBoard(){
+    for(Tile[] row : tiles) {
+      for(Tile t : row) {
+        System.out.print(t.getSymbol());
+      }
+      System.out.println();
     }
   }
 
@@ -36,7 +112,7 @@ public class Board
   // INTERFACE
   //------------------------
   /* Code from template association_GetMany */
-  public Tile getTile(int index)
+  /*public Tile getTile(int index)
   {
     Tile aTile = tiles.get(index);
     return aTile;
@@ -64,7 +140,7 @@ public class Board
   {
     int index = tiles.indexOf(aTile);
     return index;
-  }
+  }*/
   /* Code from template association_GetMany */
   public Weapon getWeapon(int index)
   {
@@ -101,7 +177,7 @@ public class Board
     return 0;
   }
   /* Code from template association_AddUnidirectionalMany */
-  public boolean addTile(Tile aTile)
+ /* public boolean addTile(Tile aTile)
   {
     boolean wasAdded = false;
     if (tiles.contains(aTile)) { return false; }
@@ -121,7 +197,7 @@ public class Board
     return wasRemoved;
   }
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addTileAt(Tile aTile, int index)
+  /*public boolean addTileAt(Tile aTile, int index)
   {  
     boolean wasAdded = false;
     if(addTile(aTile))
@@ -151,7 +227,7 @@ public class Board
       wasAdded = addTileAt(aTile, index);
     }
     return wasAdded;
-  }
+  }*/
   /* Code from template association_RequiredNumberOfMethod */
   public static int requiredNumberOfWeapons()
   {
@@ -194,13 +270,10 @@ public class Board
 
   public void delete()
   {
-    tiles.clear();
+    //tiles.clear();
     weapons.clear();
   }
 
-  // line 6 "model.ump"
-  public void printBoard(){
-    
-  }
+
 
 }
