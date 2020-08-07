@@ -21,7 +21,7 @@ public class Board
   // CONSTRUCTOR
   //------------------------
 
-  public Board(Weapon... allWeapons)
+  public Board()
   {
     tiles = new ArrayList<Tile>();
     weapons = new ArrayList<Weapon>();

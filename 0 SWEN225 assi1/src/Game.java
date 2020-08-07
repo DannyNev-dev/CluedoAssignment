@@ -49,13 +49,15 @@ public class Game
 
   public Game(String boardData)
   {
+    //initialise objects
     envelope = new ArrayList<Card>();
     accusations = new ArrayList<List<String>>();
-    //board = new Board();
     players = new ArrayList<Player>();
     tiles = new ArrayList<Tile>();
     cards = new ArrayList<Card>();
+
     System.out.println("Welcome to Cluedo");
+    //create players
     System.out.println("How many players will there be this round?");
     Scanner s = new Scanner(System.in);
     int numPlayers = s.nextInt();
@@ -68,10 +70,26 @@ public class Game
     		players.add(new Player(CHARACTERLOC[i], false, CHARACTERSYMBOL[i]));
     	}
     }
+    //read board map text file and create board from data
+    try {
+      BufferedReader br = new BufferedReader(new FileReader("boardMap.txt"));
+      //go through all lines of file and add it to string
+      StringBuilder sb = new StringBuilder();
+      String str = "";  //line read from file
+      while((str = br.readLine()) != null) {
+        System.out.println(str);
+        sb.append(str);
+      }
+    } catch(IOException e) {
+      System.out.println("Board map txt file not found");
+      return;
+    }
+
+    //print board
     createBoard(boardData);
   }
   
-  public static void main(String args[]){
+  public static void main(String[] args){
 	  Game g = new Game(null);	    
   }
 
