@@ -1,7 +1,7 @@
 import java.awt.Point;
 
-public class DoorTile extends Tile{
-
+public class DoorTile extends Tile
+{
 	  //------------------------
 	  // MEMBER VARIABLES
 	  //------------------------
@@ -28,5 +28,4 @@ public class DoorTile extends Tile{
 	  public String toString(){
 		return String.valueOf(super.getSymbol());
 	  }
-
 }

@@ -1,17 +1,10 @@
-/*PLEASE DO NOT EDIT THIS CODE*/
-/*This code was generated using the UMPLE 1.30.0.5099.60569f335 modeling language!*/
-
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collector;
 
-// line 2 "model.ump"
-// line 104 "model.ump"
 public class Board
 {
-
   //------------------------
   // MEMBER VARIABLES
   //------------------------
@@ -59,7 +52,7 @@ public class Board
           case 'm':
             tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[5]);
             break;
-          case '|': // door that can only be entered on the vertical
+          case '|': // door can only be entered on the vertical
         	  tiles[i][j] = new DoorTile(new Point(i, j), c, null);
         	  break;
           case '-': 
@@ -112,9 +105,6 @@ public class Board
     return null;
   }
 
-
-  // line 6 "model.ump"
-
   /**
    * prints current state of board
    */
@@ -126,7 +116,12 @@ public class Board
       System.out.println();
     }
   }
-
+  
+  // gets board grid and returns it
+  public Tile[][] getGrid() {
+		return tiles;
+	}
+  
   //------------------------
   // INTERFACE
   //------------------------
@@ -161,40 +156,40 @@ public class Board
     return index;
   }*/
   /* Code from template association_GetMany */
-  public Weapon getWeapon(int index)
-  {
-    Weapon aWeapon = weapons.get(index);
-    return aWeapon;
-  }
-
-  public List<Weapon> getWeapons()
-  {
-    List<Weapon> newWeapons = Collections.unmodifiableList(weapons);
-    return newWeapons;
-  }
-
-  public int numberOfWeapons()
-  {
-    int number = weapons.size();
-    return number;
-  }
-
-  public boolean hasWeapons()
-  {
-    boolean has = weapons.size() > 0;
-    return has;
-  }
-
-  public int indexOfWeapon(Weapon aWeapon)
-  {
-    int index = weapons.indexOf(aWeapon);
-    return index;
-  }
-  /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfTiles()
-  {
-    return 0;
-  }
+//  public Weapon getWeapon(int index)
+//  {
+//    Weapon aWeapon = weapons.get(index);
+//    return aWeapon;
+//  }
+//
+//  public List<Weapon> getWeapons()
+//  {
+//    List<Weapon> newWeapons = Collections.unmodifiableList(weapons);
+//    return newWeapons;
+//  }
+//
+//  public int numberOfWeapons()
+//  {
+//    int number = weapons.size();
+//    return number;
+//  }
+//
+//  public boolean hasWeapons()
+//  {
+//    boolean has = weapons.size() > 0;
+//    return has;
+//  }
+//
+//  public int indexOfWeapon(Weapon aWeapon)
+//  {
+//    int index = weapons.indexOf(aWeapon);
+//    return index;
+//  }
+//  /* Code from template association_MinimumNumberOfMethod */
+//  public static int minimumNumberOfTiles()
+//  {
+//    return 0;
+//  }
   /* Code from template association_AddUnidirectionalMany */
  /* public boolean addTile(Tile aTile)
   {
@@ -248,51 +243,48 @@ public class Board
     return wasAdded;
   }*/
   /* Code from template association_RequiredNumberOfMethod */
-  public static int requiredNumberOfWeapons()
-  {
-    return 6;
-  }
-  /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfWeapons()
-  {
-    return 6;
-  }
-  /* Code from template association_MaximumNumberOfMethod */
-  public static int maximumNumberOfWeapons()
-  {
-    return 6;
-  }
-  /* Code from template association_SetUnidirectionalN */
-  public boolean setWeapons(Weapon... newWeapons)
-  {
-    boolean wasSet = false;
-    ArrayList<Weapon> verifiedWeapons = new ArrayList<Weapon>();
-    for (Weapon aWeapon : newWeapons)
-    {
-      if (verifiedWeapons.contains(aWeapon))
-      {
-        continue;
-      }
-      verifiedWeapons.add(aWeapon);
-    }
-
-    if (verifiedWeapons.size() != newWeapons.length || verifiedWeapons.size() != requiredNumberOfWeapons())
-    {
-      return wasSet;
-    }
-
-    weapons.clear();
-    weapons.addAll(verifiedWeapons);
-    wasSet = true;
-    return wasSet;
-  }
-
-  public void delete()
-  {
-    //tiles.clear();
-    weapons.clear();
-  }
-
-
-
+//  public static int requiredNumberOfWeapons()
+//  {
+//    return 6;
+//  }
+//  /* Code from template association_MinimumNumberOfMethod */
+//  public static int minimumNumberOfWeapons()
+//  {
+//    return 6;
+//  }
+//  /* Code from template association_MaximumNumberOfMethod */
+//  public static int maximumNumberOfWeapons()
+//  {
+//    return 6;
+//  }
+//  /* Code from template association_SetUnidirectionalN */
+//  public boolean setWeapons(Weapon... newWeapons)
+//  {
+//    boolean wasSet = false;
+//    ArrayList<Weapon> verifiedWeapons = new ArrayList<Weapon>();
+//    for (Weapon aWeapon : newWeapons)
+//    {
+//      if (verifiedWeapons.contains(aWeapon))
+//      {
+//        continue;
+//      }
+//      verifiedWeapons.add(aWeapon);
+//    }
+//
+//    if (verifiedWeapons.size() != newWeapons.length || verifiedWeapons.size() != requiredNumberOfWeapons())
+//    {
+//      return wasSet;
+//    }
+//
+//    weapons.clear();
+//    weapons.addAll(verifiedWeapons);
+//    wasSet = true;
+//    return wasSet;
+//  }
+//
+//  public void delete()
+//  {
+//    //tiles.clear();
+//    weapons.clear();
+//  }
 }

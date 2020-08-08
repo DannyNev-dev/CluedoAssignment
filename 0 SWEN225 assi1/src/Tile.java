@@ -1,15 +1,7 @@
 import java.awt.Point;
 
-/*PLEASE DO NOT EDIT THIS CODE*/
-/*This code was generated using the UMPLE 1.30.0.5099.60569f335 modeling language!*/
-
-
-
-// line 9 "model.ump"
-// line 111 "model.ump"
 public class Tile
 {
-
   //------------------------
   // MEMBER VARIABLES
   //------------------------
@@ -123,5 +115,4 @@ public class Tile
   public String toString() {
     return String.valueOf(symbol);
   }
-
 }
