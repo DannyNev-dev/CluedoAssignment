@@ -67,4 +67,12 @@ public class Card
     return false;
   }
 
+  /**
+   * useful for debugging
+   * @return
+   */
+  public String toString() {
+    return this.name;
+  }
+
 }

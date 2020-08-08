@@ -42,9 +42,18 @@ public class Game
           new Player(new Point(17, 0), 'p')   //Professor Plum
   };
 
+  public static final Weapon WEAPONS[] = {
+          new Weapon('c'),  //candlestick
+          new Weapon('d'),  //dagger
+          new Weapon('l'),  //lead pipe
+          new Weapon('r'),  //revolver
+          new Weapon('o'),  //rope
+          new Weapon('a')   //spanner
+  };
+
   private Board board;
   private List<Tile> tiles;
-  private List<Card> cards;
+  private Stack<Card> cards;
 
   final static char[] WEAPONSYMBOL = {
 		  'c',
@@ -78,7 +87,7 @@ public class Game
     accusations = new ArrayList<List<String>>();
     //players = new ArrayList<Player>();
     tiles = new ArrayList<Tile>();
-    cards = new ArrayList<Card>();
+    cards = new Stack<Card>();
 
     //read board file
     String[] boardData;
@@ -95,7 +104,7 @@ public class Game
     //create players
     Scanner s = new Scanner(System.in);
     int numPlayers = 0;
-    while(numPlayers < 3 || numPlayers > 6) {
+    while(numPlayers < 3 || numPlayers > 6) {   //BUG: CRASHES IF USER ENTERS NON-NUMBER
       System.out.println("How many players will there be this round?");
       numPlayers = s.nextInt();
     }
@@ -119,7 +128,25 @@ public class Game
     //set up board now
     createBoard(boardData); 
     System.out.println();
-    
+
+    initDeck();
+    dealCards();    //give out deck to the players
+      // testing that hands and solution are correct
+   System.out.print("solution = ");
+   for(int i = 0; i < 3; i++) {
+       System.out.print(envelope.get(i)+" ");
+   }
+   System.out.println();
+   for(Player p : PLAYERS) {
+       if(p.getIsActive()) {
+           System.out.print(p.getCharacter() + " hand = ");
+           for (Card c : p.getCards()) {
+               System.out.print(c.getName() + " ");
+           }
+           System.out.println();
+       }
+   }
+
     // start game play
     gamePlay(numPlayers);
   }
@@ -135,7 +162,6 @@ public class Game
 	move(PLAYERS[0], 's');
 	Player p = new Player(new Point(1, 9), 's');
 	move(p, 'a');
-	
   }
 
 public static void main(String[] args){
@@ -156,14 +182,14 @@ public static void main(String[] args){
    */
   private String[] readBoardMapFile(String fileName) throws IOException {
     //read board map text file and create board from data
-    String[] data = new String[25];
+    String[] data = new String[Board.HEIGHT];
     try {
       BufferedReader br = new BufferedReader(new FileReader(fileName));
       //go through all lines of file and add it to string
       String str = "";  //line read from file
       int numRows = 0;
       while((str = br.readLine()) != null) {
-        if(numRows > 25) {  //if greater than 25 rows, then is not right board
+        if(numRows > Board.HEIGHT) {  //if greater than 25 rows, then is not right board
           throw new IOException();
         }
         data[numRows] = str;
@@ -183,7 +209,6 @@ public static void main(String[] args){
   public void createBoard(String[] boardData) {
     board = new Board(boardData);  //initialise board
     board.printBoard();
-    //set up weapons for board
   }
 
   //------------------------
@@ -639,22 +664,95 @@ public static void main(String[] args){
 //    cards.clear();
 //  }
 
-  // line 76 "model.ump"
-  public Card[] initDeck(){
-	return null;
-    
-  }
+    // line 76 "model.ump"
 
-  // line 77 "model.ump"
-  public void dealCards(){
-    
-  }
+    /**
+     * initialises deck and solution for a new game
+     * @return
+     */
+    public void initDeck(){
+        //create character cards
+        Stack<Card> charCards = new Stack<>();
+        charCards.push(new Card("Miss Scarlet"));
+        charCards.push(new Card("Colonel Mustard"));
+        charCards.push(new Card("Mrs White"));
+        charCards.push(new Card("Mr Green"));
+        charCards.push(new Card("Mrs Peacock"));
+        charCards.push(new Card("Professor Plum"));
+        Collections.shuffle(charCards);
+        //create weapon cards
+        Stack<Card> weaponCards = new Stack<>();
+        weaponCards.push(new Card("candlestick"));
+        weaponCards.push(new Card("dagger"));
+        weaponCards.push(new Card("lead pipe"));
+        weaponCards.push(new Card("revolver"));
+        weaponCards.push(new Card("rope"));
+        weaponCards.push(new Card("spanner"));
+        Collections.shuffle(weaponCards);
+        //create room cards
+        Stack<Card> roomCards = new Stack<>();
+        roomCards.push(new Card("kitchen"));
+        roomCards.push(new Card("ballroom"));
+        roomCards.push(new Card("conservatory"));
+        roomCards.push(new Card("billard room"));
+        roomCards.push(new Card("library"));
+        roomCards.push(new Card("study"));
+        roomCards.push(new Card("hall"));
+        roomCards.push(new Card("lounge"));
+        roomCards.push(new Card("dining room"));
+        Collections.shuffle(roomCards);
+        //create solution
+        envelope = selectSolution(charCards, weaponCards, roomCards);
 
-  // line 78 "model.ump"
-  public Card[] selectSolution(){
-	return null;
-    
-  }
+        //create deck noList<Card> deck = new ArrayList<>();
+        int originalSize = charCards.size();
+        for(int i = 0; i < originalSize; i++) { //adding characters
+            cards.add(charCards.pop());
+        }
+        for(int i = 0; i < weaponCards.size(); i++) {   //adding weapons
+            cards.add(weaponCards.pop());
+        }
+        for(int i = 0; i < roomCards.size(); i++) { //adding rooms
+            cards.add(roomCards.pop());
+        }
+    }
+
+    // line 77 "model.ump"
+
+    /**
+     * deals remaining cards of deck to player's hand
+     */
+    public void dealCards() {
+        Collections.shuffle(cards);   //shuffle deck
+
+        Iterator<Player> playerIterator =  Collections.unmodifiableList(Arrays.asList(PLAYERS)).iterator();
+        while(!cards.isEmpty()) {   //loop through all active players until deck has no more cards
+            if(!playerIterator.hasNext()) { //if reached end of players: reset iterator
+                playerIterator  = Collections.unmodifiableList(Arrays.asList(PLAYERS)).iterator();
+            }
+
+            Player p = playerIterator.next();
+            if(p.getIsActive()) {
+                p.addCard(cards.pop());
+            }
+        }
+    }
+
+    // line 78 "model.ump"
+    /**
+     * creates the solution for the current game
+     * @param charCards
+     * @param weaponCards
+     * @param roomCards
+     * @return
+     */
+    public List<Card> selectSolution(Stack<Card> charCards, Stack<Card> weaponCards, Stack<Card> roomCards){
+        List<Card> solution = new ArrayList<>();
+        solution.add(charCards.pop());
+        solution.add(weaponCards.pop());
+        solution.add(roomCards.pop());
+        return solution;
+    }
   
   // list of player moves in a turn
   private List<Point> moveLog;
@@ -729,6 +827,17 @@ public static void main(String[] args){
 		  board.printBoard();
 		  System.out.println();
 	  }else {System.out.println("ERROR: Invalid move");}
+  }
+
+    /**
+     * teleports token instantly from one location to another
+     * @param token
+     * @param moveFrom
+     * @param moveTo
+     */
+  public void teleport(Token token, Point moveFrom, Point moveTo) {
+      board.getGrid()[(int)moveTo.getY()][(int)moveTo.getX()].setToken(token);   //move token to new position
+      board.getGrid()[(int)moveFrom.getY()][(int)moveFrom.getX()].setToken(null);   //remove token from old position
   }
   
 

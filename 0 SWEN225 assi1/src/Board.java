@@ -9,6 +9,9 @@ public class Board
   // MEMBER VARIABLES
   //------------------------
 
+  public static final int HEIGHT = 25;
+  public static final int WIDTH = 24;
+
   //Board Associations
   private Tile[][] tiles;
   private List<Weapon> weapons;
@@ -19,12 +22,12 @@ public class Board
 
   public Board(String[] boardData)
   {
-    tiles = new Tile[25][24];
+    tiles = new Tile[HEIGHT][WIDTH];
     //add data to each tile
     for(int i = 0; i < tiles.length; i++) {
       Tile[] row = tiles[i];
      // System.out.println("row: "+boardData[i]);
-      for(int j = 0; j < row.length; j++) { //is row.length-1 because want to ignore \n
+      for(int j = 0; j < row.length; j++) {
         //check which tile is it
         char c = boardData[i].charAt(j);
         switch(c) {
@@ -67,7 +70,7 @@ public class Board
     weapons = new ArrayList<>();
     //initialise weapons
     for(int i = 0; i < 6; i++) {
-      weapons.add(new Weapon(Game.WEAPONSYMBOL[i]));
+      weapons.add(Game.WEAPONS[i]);
     }
     //shuffle weapon's list and add to rooms
     Collections.shuffle(weapons);
@@ -93,9 +96,9 @@ public class Board
    * @param c character to search for
    * @return
    */
-  private Point searchFor(char c) {
-	  for(int i = 0; i < 25; i++) {
-		  for(int j = 0; j < 24; j++) {
+  public Point searchFor(char c) {
+	  for(int i = 0; i < HEIGHT; i++) {
+		  for(int j = 0; j < WIDTH; j++) {
 			  if(tiles[i][j].getSymbol() == c) {
 				  return new Point(i, j);
 			  }
@@ -132,9 +135,15 @@ public class Board
     return aTile;
   }
 
-  public List<Tile> getTiles()
+  public List<List<Tile>> getTiles()
   {
-    List<Tile> newTiles = Collections.unmodifiableList(tiles);
+    //change tiles into java list
+    List<List<Tile>> tilesList = new ArrayList<>();
+    for(int i = 0) {
+      ;
+    }
+
+    List<List<Tile>> newTiles = Collections.unmodifiableList(tilesList);
     return newTiles;
   }
 

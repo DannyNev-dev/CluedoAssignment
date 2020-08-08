@@ -78,6 +78,14 @@ public class Tile
     return symbol;
   }
 
+  /**
+   * Will always return the room symbol for this tile, no matter if it's being occupied token or not
+   * @return
+   */
+  public char getUnderlyingSymbol() {
+    return symbol;
+  }
+
   public boolean getIsOccupied()
   {
     return isOccupied;

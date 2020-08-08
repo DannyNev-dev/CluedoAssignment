@@ -53,6 +53,167 @@ public class Player extends Token
     return character;
   }
 
+  // line 95 "model.ump"
+
+  /**
+   * if player wants to make a suggestion and can do it, this function is called
+   * @param board for getting the weapons and char
+   * @return
+   */
+  public Card[] makeSuggestion(Board board, Game game){
+    //let player choose one character card and one weapon card via strings
+    Player characterSelected = null;
+    String characterName = "";
+    String weaponName = "";
+    String roomName = "";
+    Weapon weaponSelected = null;
+    boolean selectedValid = false;  //checking is typed in character is valid
+    Scanner s = new Scanner(System.in);
+    //select character
+    char inputChar = '\0';
+    while(!selectedValid) {
+      System.out.println("Select a character: ");
+      System.out.println("Miss Scarlet: s");
+      System.out.println("Colonel Mustard: m");
+      System.out.println("Mrs White: w");
+      System.out.println("Mr Green: g");
+      System.out.println("Mrs Peacock: k");
+      System.out.println("Professor Plum: p");
+      inputChar = s.next().charAt(0);
+      switch(inputChar) {
+        case 's':
+          characterName = "Miss Scarlet";
+          selectedValid = true;
+          break;
+        case 'm':
+          characterName = "Colonel Mustard";
+          selectedValid = true;
+          break;
+        case 'w':
+          characterName = "Mrs White";
+          selectedValid = true;
+          break;
+        case 'g':
+          characterName = "Mr Green";
+          selectedValid = true;
+          break;
+        case 'k':
+          characterName = "Mrs Peacock";
+          selectedValid = true;
+          break;
+        case 'p':
+          characterName = "Professor Plum";
+          selectedValid = true;
+          break;
+        default:
+          System.out.println("first char in string is not a valid character");
+          break;
+      }
+    }
+    Card charCard = new Card(characterName);  //create character card
+    Point charLoc = board.searchFor(inputChar); //find character on board, for moving the char
+
+    //select weapon
+    selectedValid = false;  //checking is typed in character is valid
+    inputChar = '\0';
+    while(!selectedValid) {
+      System.out.println("Select a weapon: ");
+      System.out.println("Candlestick: c");
+      System.out.println("Dagger: d");
+      System.out.println("Lead Pipe: l");
+      System.out.println("Revolver: r");
+      System.out.println("Rope: o");
+      System.out.println("Spanner: a");
+      switch (inputChar) {
+        case 'c':
+          weaponName = "candlestick";
+          selectedValid = true;
+          break;
+        case 'd':
+          weaponName = "dagger";
+          selectedValid = true;
+          break;
+        case 'l':
+          weaponName = "lead pipe";
+          selectedValid = true;
+          break;
+        case 'r':
+          weaponName = "revolver";
+          selectedValid = true;
+          break;
+        case 'o':
+          weaponName = "rope";
+          selectedValid = true;
+          break;
+        case 'a':
+          weaponName = "spanner";
+          selectedValid = true;
+          break;
+        default:
+          System.out.println("first char in string is not a valid character");
+          break;
+      }
+    }
+    Card weaponCard = new Card(weaponName);  //create weapon card
+    Point weaponLoc = board.searchFor(inputChar); //find weapon on board, for moving the weapon
+
+    //get room suggestion took place in
+    //get symbol of tile from player
+    inputChar = board.getGrid()[(int)this.location.getY()][(int)this.location.getX()].getUnderlyingSymbol();
+    switch (inputChar) {
+      case 'K':
+        roomName = "kitchen";
+        break;
+      case 'B':
+        roomName = "ballroom";
+        break;
+      case 'C':
+        roomName = "conservatory";
+        break;
+      case 'G':
+        roomName = "billard room";
+        break;
+      case 'Y':
+        roomName = "library";
+        break;
+      case 'S':
+        roomName = "study";
+        break;
+      case 'H':
+        roomName = "hall";
+        break;
+      case 'L':
+        roomName = "lounge";
+        break;
+      case 'D':
+        roomName = "dining room";
+        break;
+    }
+    Card roomCard = new Card(roomName); //create room card
+
+    //move character to room that player is in
+    //check if character is not in room already
+    if(board.getGrid()[(int)charLoc.getY()][(int)charLoc.getX()].getUnderlyingSymbol() != inputChar) {
+      Point moveTo = board.searchFor(inputChar);  //place character in first available spot
+      game.teleport(board.getGrid()[(int)charLoc.getY()][(int)charLoc.getX()].getToken(), charLoc, moveTo);
+    }
+
+    //move weapon to room that player is in
+    //check if weapon is not in room already
+    if(board.getGrid()[(int)weaponLoc.getY()][(int)weaponLoc.getX()].getUnderlyingSymbol() != inputChar) {
+      Point moveTo = board.searchFor(inputChar);  //place character in first available spot
+      game.teleport(board.getGrid()[(int)weaponLoc.getY()][(int)weaponLoc.getX()].getToken(), charLoc, moveTo);
+    }
+
+    Card[] suggestion = {charCard, weaponCard, roomCard};
+    return suggestion;
+  }
+
+  // line 96 "model.ump"
+  public void makeAccusation(int i){
+    //ask for accusation
+  }
+
   //------------------------
   // INTERFACE
   //------------------------
@@ -243,15 +404,4 @@ public class Player extends Token
 	return String.valueOf(character);
     
   }
-
-  // line 95 "model.ump"
-   public void makeSuggestion(){
-    
-  }
-
-  // line 96 "model.ump"
-   public void makeAccusation(){
-    
-  }
-
 }
