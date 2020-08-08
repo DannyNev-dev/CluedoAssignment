@@ -28,13 +28,13 @@ public class Card
   // INTERFACE
   //------------------------
 
-  public boolean setName(String aName)
+ /* public boolean setName(String aName)
   {
     boolean wasSet = false;
     name = aName;
     wasSet = true;
     return wasSet;
-  }
+  }*/
 
   public String getName()
   {
@@ -51,9 +51,20 @@ public class Card
   }
 
   // line 52 "model.ump"
-  public String toString(){
-	return name;
-    
+
+  /**
+   * compares two cards and sees if the card is in fact the same
+   * @param o
+   * @return
+   */
+  public boolean equals(Object o) {
+    if(o instanceof Card) { //check if same class
+      Card c = (Card) o;
+      if(c.name.equals(this.name)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
