@@ -210,8 +210,41 @@ public class Player extends Token
   }
 
   // line 96 "model.ump"
-  public void makeAccusation(int i){
-    //ask for accusation
+
+  /**
+   * let's this player chose an accusation
+   * @param accusations
+   * @param solution
+   * @return  true if accusation was correct. false if not
+   */
+  public boolean makeAccusation(List<List<Card>> accusations, List<Card> solution){
+    //print accusations
+    System.out.println("Accusations are: ");
+    for(List<Card> accusation :  accusations) {
+      System.out.print("\t");
+      for(Card card : accusation) {  //print out all the parts of the accusation
+        System.out.print(card.getName()+" ");
+      }
+    }
+    //ask for which accusation
+    Scanner s = new Scanner(System.in);
+    int indexChosen = 0;
+    while(indexChosen > accusations.size() && indexChosen < 0) {
+      System.out.println("Which accusation do you choose?");
+      indexChosen = s.nextInt();
+    }
+    //get accusation from list of accusations in game
+    List<Card> chosenAccusation = accusations.get(indexChosen);
+    //check is accusation is correct
+    for(int i = 0; i< chosenAccusation.size(); i++) {
+      if(!chosenAccusation.get(i).equals(solution.get(i))) {      //if not
+        System.out.println("Accusation was incorrect!");
+        this.canWin = false;  //now this player cannot win in this game
+        return false;
+      }
+    }
+    System.out.println("Accusation was correct!");  //if so
+    return true;
   }
 
   //------------------------
