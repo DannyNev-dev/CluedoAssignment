@@ -2,6 +2,8 @@ import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
+import static java.lang.Integer.parseInt;
+
 public class Game
 {
   //------------------------
@@ -9,8 +11,8 @@ public class Game
   //------------------------
 
   //Game Attributes
-  private List<Card> envelope;
-  private List<List<String>> accusations;
+  private List<Card> envelope;  //order of solution is character, weapon then room
+  private List<List<Card>> accusations;
   
   private Boolean gameOver = false;
 
@@ -55,14 +57,14 @@ public class Game
   private List<Tile> tiles;
   private Stack<Card> cards;
 
-  final static char[] WEAPONSYMBOL = {
+  /*final static char[] WEAPONSYMBOL = {
 		  'c',
 		  'd',
 		  'l',
 		  'r',
 		  'o',
 		  'a'
-  };
+  };*/
   
   final static char[] ROOMSYMBOL = {
 		  'K',
@@ -84,7 +86,7 @@ public class Game
   {
     //initialise objects
     envelope = new ArrayList<Card>();
-    accusations = new ArrayList<List<String>>();
+    accusations = new ArrayList<List<Card>>();
     //players = new ArrayList<Player>();
     tiles = new ArrayList<Tile>();
     cards = new Stack<Card>();
@@ -102,15 +104,24 @@ public class Game
     System.out.println();
     
     //create players
-    Scanner s = new Scanner(System.in);
+    Scanner s;// = new Scanner(System.in);
     int numPlayers = 0;
-    while(numPlayers < 3 || numPlayers > 6) {   //BUG: CRASHES IF USER ENTERS NON-NUMBER
-      System.out.println("How many players will there be this round?");
-      numPlayers = s.nextInt();
+    boolean hasError = true;
+    while(numPlayers < 3 || numPlayers > 6) {
+        System.out.println("Please state number of players from 3 to 6:");
+        s = new Scanner(System.in); //get input
+        String input = s.next();
+        try {
+        numPlayers = parseInt(input);
+        //check that input is valid
+        } catch(NumberFormatException e) {
+            System.out.println("ERROR: invalid character Please type down a character");
+        }
     }
 
+
     for(int i = 0; i < 6; i++) {
-    	if(i <= numPlayers) {
+    	if(i <= numPlayers-1) {
     	    PLAYERS[i].setIsActive(true);
     	    PLAYERS[i].setCanWin(true);
     		//players.add(new Player(CHARACTERLOC[i], true, CHARACTERSYMBOL[i]));
@@ -140,28 +151,58 @@ public class Game
    for(Player p : PLAYERS) {
        if(p.getIsActive()) {
            System.out.print(p.getCharacter() + " hand = ");
-           for (Card c : p.getCards()) {
+           for (Card c : p.getHand()) {
                System.out.print(c.getName() + " ");
            }
            System.out.println();
        }
    }
-
-    // start game play
-    gamePlay(numPlayers);
   }
   
-  public void gamePlay(int numPlayers) {
+  public void gamePlay() {
 	Scanner s = new Scanner(System.in);
 	// while the game is not over
-//	while(!gameOver) {	
-//
-//		
-//	}
+	while(!gameOver) {
+        for(Player player : PLAYERS) { //go through all active player
+            if(player.getIsActive()) {
+                System.out.println("Current player is: "+player.getSymbol());
+                int numMoves = rollDice();  //roll dice
+                // list of player moves in a turn
+                List<Point> moveLog = new ArrayList<>();
+                //now let player move until run out of moves, no available moves or in new room and player accepted query
+                System.out.println("numMoves = "+numMoves);
+                boolean finishTurnEarly = false;    //for when no more available moves
+                for(int i = 0; i < numMoves && !finishTurnEarly; i++) {
+                    char inputChar = '\0';
+                    while(true) {
+                        System.out.println("Please select a direction to move:");
+                        System.out.println("Forward: 'w',  Left: 'a', Right: 'd', Down: 's'");
+                        inputChar = s.next().charAt(0);
+                        System.out.println("char  = "+inputChar);
+                        if(inputChar != 'w' && inputChar != 'a' && inputChar != 'd' && inputChar != 's') {
+                            System.out.println("ERROR: invalid input!");
+                            System.out.println();
+                        }
+                        else break;
+                    }
+                    int outcome = move(player, inputChar, moveLog);
+                    switch (outcome) {
+                        case 1: //invalid move
+                            i--;
+                            break;
+                        case 2: //no valid moves
+                            finishTurnEarly = true;
+                            break;
+                    }
+                    System.out.println((numMoves-i)+" moves left");
+                }
+            }
+        }
+	}
 	
-	move(PLAYERS[0], 's');
-	Player p = new Player(new Point(1, 9), 's');
-	move(p, 'a');
+	//move(PLAYERS[0], 's');
+	//Player p = new Player(new Point(1, 9), 's');
+	//move(p, 'a');
   }
 
 public static void main(String[] args){
@@ -169,10 +210,11 @@ public static void main(String[] args){
     Game game;
 	try {
       game = new Game();
+        // start game play
+        game.gamePlay();
     } catch(IOException e) {
       System.out.println("ERROR: board map file could not be read");
     }
-	//play game	
   }
 
   /**
@@ -211,7 +253,146 @@ public static void main(String[] args){
     board.printBoard();
   }
 
-  //------------------------
+    // partial turn play to test move method
+    // need to add suggest, accuse refute...
+    //public void turn(Player p){
+       /* moveLog = new ArrayList<Point>();
+        int movesLeft = rollDice();
+
+        while(movesLeft != 0) {
+            // if the move is valid
+            if(validMove(p.getLocation())) {
+                // add the move to the moveLog
+                moveLog.add(p.getLocation());
+                // call move
+                move(p, 's');
+            }
+        }
+        */
+    //}
+
+    // checks if players next move is a valid move
+    public boolean validMove(Point newPos, Point oldPos, boolean checkingMainMove, List<Point> moveLog) {
+
+        //check that is within board bounds
+        if(newPos.y < 0
+                || newPos.y >= Board.HEIGHT
+                || newPos.x < 0
+                || newPos.x >= Board.WIDTH
+                || board.getGrid()[newPos.y][newPos.y].getUnderlyingSymbol() == '.') {
+            if(checkingMainMove) {
+                System.out.println("Invalid move! Goes out of bounds");
+                board.printBoard();
+                System.out.println();
+            }
+            return false;
+        }
+
+        //check if will go to a room tile
+        if(board.getGrid()[newPos.y][newPos.x] instanceof RoomTile) {
+            if(!(board.getGrid()[oldPos.y][oldPos.x] instanceof DoorTile) && !(board.getGrid()[oldPos.y][oldPos.x] instanceof RoomTile)) {//check if not coming from a door tile
+                if(checkingMainMove) {
+                    System.out.println("Invalid move! Goes into a room without first going through a door");   //if not, then it is invalid move
+                    board.printBoard();
+                    System.out.println();
+                }
+                return false;
+            }
+        }
+
+        //check if currently in a room tile, if so can only move in room or door
+        if(board.getGrid()[oldPos.y][oldPos.x] instanceof RoomTile) {
+            if(!(board.getGrid()[newPos.y][newPos.x] instanceof DoorTile) && !(board.getGrid()[newPos.y][newPos.x] instanceof RoomTile)) {//check if not coming from a door tile
+                if(checkingMainMove) {
+                    System.out.println("Invalid move! Goes out of a room without first going through a door");   //if not, then it is invalid move
+                    board.printBoard();
+                    System.out.println();
+                }
+                return false;
+            }
+        }
+
+        //check that it's not overlapping any previously made moves
+        for(int i = 0; i < moveLog.size(); i++) {
+            if(moveLog.get(i).equals(newPos)) {
+                if(checkingMainMove) {
+                    System.out.println("Invalid move! Goes to previously visited location");
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // moves the player by one tile, returns 0 if was a valid move, 1 is it was not a valid move, 2 if there's no move possible
+    public int move(Player p, char dir, List<Point> moveLog){
+
+        int x = 0;
+        int y = 0;
+        int currentRow = (int) p.getLocation().getX();
+        int currentCol = (int) p.getLocation().getY();
+
+        switch(dir) {
+            case 'w': // move up
+                y = -1;
+                break;
+            case 'd': // move right
+                x = +1;
+                break;
+            case 's': // move down
+                y = +1;
+                break;
+            case 'a': // move left
+                x = -1;
+                break;
+            default:
+                System.out.println("ERROR: Invalid input");
+                break;
+        }
+        //check all directions that player can go
+        boolean noMovesExist = true;
+        noMovesExist = ( !validMove(new Point(currentCol-1, currentRow), new Point(currentCol, currentRow), false, moveLog) &&    //left
+                       !validMove(new Point(currentCol+1, currentRow), new Point(currentCol, currentRow), false, moveLog) &&     //right
+                       !validMove(new Point(currentCol, currentRow+1), new Point(currentCol, currentRow), false, moveLog) &&    //down
+                       !validMove(new Point(currentCol, currentRow-1), new Point(currentCol, currentRow), false, moveLog));     //up
+
+        if(noMovesExist) {
+            System.out.println("No possible moves exist!, finishing turn");
+            return 2;   //no possible moves
+        }
+
+        //check if current move is valid
+        if(!validMove(new Point(currentCol+x, currentRow+y), new Point(currentCol, currentRow), true, moveLog)) {
+            return 1;
+        }
+
+
+        // if the players next move choice has no token
+        if (board.getGrid()[currentRow + y][currentCol + x].getToken() == null) {
+            //update board
+            // set the current tiles token as null
+            board.getGrid()[currentRow][currentCol].setToken(null);
+
+            // set the next moves tiles token as player
+            board.getGrid()[currentRow + y][currentCol + x].setToken(p);
+
+            //update player location
+            p.setLocation(new Point(currentRow+y, currentCol+x));
+
+            //add move to moveLog
+            moveLog.add(new Point(currentCol+x, currentRow+y));
+
+            // print updated board
+            board.printBoard();
+            System.out.println();
+
+            return 0;    //was valid so return true
+        }else {System.out.println("ERROR: Invalid move");}
+        return 1;
+    }
+
+
+    //------------------------
   // INTERFACE
   //------------------------
   /* Code from template attribute_SetMany */
@@ -754,80 +935,6 @@ public static void main(String[] args){
         return solution;
     }
   
-  // list of player moves in a turn
-  private List<Point> moveLog;
-
-  // partial turn play to test move method
-  // need to add suggest, accuse refute...
-  public void turn(Player p){
-	  moveLog = new ArrayList<Point>();
-	  int movesLeft = rollDice();
-	  
-	  while(movesLeft != 0) {
-		  // if the move is valid
-		  if(validMove(p.getLocation())) {
-			  // add the move to the moveLog
-			  moveLog.add(p.getLocation());
-			  // call move
-			  move(p, 's');
-		  }
-	  }
-	  
-  }
-  
-  // checks if players next move has already been visited in the same turn 
-  public boolean validMove(Point p) {
-	  for(int i = 0; i < moveLog.size(); i++) {
-		  if(moveLog.get(i) == p) {
-			  return false;
-		  }
-	  }
-	  return true;
-  }
-
-  // moves the player
-  public void move(Player p, char dir){
-	  
-	  int x = 0;
-	  int y = 0;  
-	  int currentRow = (int) p.getLocation().getX();
-	  int currentCol = (int) p.getLocation().getY();
-
-	  switch(dir) {
-      case 'w': // move up 
-    	  y = -1;
-        break;
-      case 'd': // move right
-    	  x = +1;
-        break;
-      case 's': // move down
-    	  y = +1;
-    	break;
-      case 'a': // move left
-    	  x = -1;
-    	break;
-      default:
-    	  System.out.println("ERROR: Invalid input");
-    	break;
-	  }
-	  
-	  // still need to deal with doors 
-	  // ... 
-	  
-	  // if the players next move choice has no token  
-	  if (!(board.getGrid()[currentRow + y][currentCol + x].hasToken())) {
-		  
-		  // set the current tiles token as null
-		  board.getGrid()[currentRow][currentCol].setToken(null);
-		  
-		  // set the next moves tiles token as player
-		  board.getGrid()[currentRow + y][currentCol + x].setToken(p);
-		  
-		  // print updated board
-		  board.printBoard();
-		  System.out.println();
-	  }else {System.out.println("ERROR: Invalid move");}
-  }
 
     /**
      * teleports token instantly from one location to another
@@ -843,8 +950,8 @@ public static void main(String[] args){
 
   // 2 dice roll
   public int rollDice(){
-	  double randomNum = Math.random() * (12 - 2 + 1) + 2;
-	  return (int) randomNum;
+	  int randomNum = (int)((Math.random() * 12) + 2);
+	  return randomNum;
   }
 
 //  public String toString()
