@@ -5,6 +5,8 @@
 import java.awt.Point;
 import java.util.*;
 
+import static java.lang.Integer.parseInt;
+
 // line 86 "model.ump"
 // line 170 "model.ump"
 public class Player extends Token
@@ -20,10 +22,10 @@ public class Player extends Token
   private char character;
   private boolean isActive;
   private boolean canWin;
-  private List<Card> hand;
+  //private List<Card> hand;
 
   //Player Associations
-  private List<Card> cards;
+  private List<Card> hand;
 
   //------------------------
   // CONSTRUCTOR
@@ -34,8 +36,8 @@ public class Player extends Token
     location = aLocation;
    // isActive = isActive;
     character = aCharacter;
+    //hand = new ArrayList<Card>();
     hand = new ArrayList<Card>();
-    cards = new ArrayList<Card>();
   }
 
   public Player(Point aLocation, boolean isActive, char aCharacter, boolean canWin)
@@ -45,8 +47,8 @@ public class Player extends Token
     this.isActive = isActive;
     character = aCharacter;
     this.canWin = canWin;
+    //hand = new ArrayList<Card>();
     hand = new ArrayList<Card>();
-    cards = new ArrayList<Card>();
   }
 
   public char getSymbol() {
@@ -124,6 +126,7 @@ public class Player extends Token
       System.out.println("Revolver: r");
       System.out.println("Rope: o");
       System.out.println("Spanner: a");
+      inputChar = s.next().charAt(0);
       switch (inputChar) {
         case 'c':
           weaponName = "candlestick";
@@ -159,7 +162,7 @@ public class Player extends Token
 
     //get room suggestion took place in
     //get symbol of tile from player
-    inputChar = board.getGrid()[(int)this.location.getY()][(int)this.location.getX()].getUnderlyingSymbol();
+    inputChar = board.getGrid()[(int)this.location.getX()][(int)this.location.getY()].getUnderlyingSymbol();
     switch (inputChar) {
       case 'K':
         roomName = "kitchen";
@@ -193,7 +196,7 @@ public class Player extends Token
 
     //move character to room that player is in
     //check if character is not in room already
-    if(board.getGrid()[(int)charLoc.getY()][(int)charLoc.getX()].getUnderlyingSymbol() != inputChar) {
+    if(board.getGrid()[(int)charLoc.getX()][(int)charLoc.getY()].getUnderlyingSymbol() != inputChar) {
       Point moveTo = board.searchFor(inputChar);  //place character in first available spot
       game.teleport(board.getGrid()[(int)charLoc.getY()][(int)charLoc.getX()].getToken(), charLoc, moveTo);
     }
@@ -217,34 +220,49 @@ public class Player extends Token
    * @param solution
    * @return  true if accusation was correct. false if not
    */
-  public boolean makeAccusation(List<List<Card>> accusations, List<Card> solution){
+  public int makeAccusation(List<Card[]> accusations, List<Card> solution){
     //print accusations
     System.out.println("Accusations are: ");
-    for(List<Card> accusation :  accusations) {
+    for(int i = 0; i < accusations.size(); i++) {
+      Card[] accusation = accusations.get(i);
       System.out.print("\t");
       for(Card card : accusation) {  //print out all the parts of the accusation
         System.out.print(card.getName()+" ");
       }
+      System.out.println("["+i+"]");
     }
+    System.out.println();
     //ask for which accusation
-    Scanner s = new Scanner(System.in);
-    int indexChosen = 0;
-    while(indexChosen > accusations.size() && indexChosen < 0) {
-      System.out.println("Which accusation do you choose?");
-      indexChosen = s.nextInt();
-    }
-    //get accusation from list of accusations in game
-    List<Card> chosenAccusation = accusations.get(indexChosen);
-    //check is accusation is correct
-    for(int i = 0; i< chosenAccusation.size(); i++) {
-      if(!chosenAccusation.get(i).equals(solution.get(i))) {      //if not
-        System.out.println("Accusation was incorrect!");
-        this.canWin = false;  //now this player cannot win in this game
-        return false;
+    Scanner s;
+    int indexChosen = -1;
+    while(indexChosen > accusations.size() || indexChosen < 0) {
+      System.out.println("Which accusation do you choose? Please choose index of accusation");
+      s = new Scanner(System.in);
+      String str = s.next();
+
+      try {
+        indexChosen = parseInt(str);
+      } catch(NumberFormatException e) {
+        System.out.println("ERROR: invalid character Please type down a character");
       }
     }
-    System.out.println("Accusation was correct!");  //if so
-    return true;
+    //get accusation from list of accusations in game
+    //check that accusations exist
+    if(!accusations.isEmpty()) {
+      Card[] chosenAccusation = accusations.get(indexChosen);
+      //check is accusation is correct
+      for (int i = 0; i < chosenAccusation.length; i++) {
+        if (!chosenAccusation[i].getName().equals(solution.get(i).getName())) {      //if not
+          System.out.println("Accusation was incorrect!");
+          this.canWin = false;  //now this player cannot win in this game
+          return 0;
+        }
+      }
+      System.out.println("Accusation was correct!");  //if so
+      return 1;
+    }
+    System.out.println("No accusations!");
+    return 2;
   }
 
   //------------------------
@@ -271,6 +289,7 @@ public class Player extends Token
   {
     this.canWin = canWin;
   }
+  public boolean getCanWin() {return this.canWin;}
 
   public boolean setCharacter(char aCharacter)
   {
@@ -278,20 +297,6 @@ public class Player extends Token
     character = aCharacter;
     wasSet = true;
     return wasSet;
-  }
-  /* Code from template attribute_SetMany */
-  public boolean addHand(Card aHand)
-  {
-    boolean wasAdded = false;
-    wasAdded = hand.add(aHand);
-    return wasAdded;
-  }
-
-  public boolean removeHand(Card aHand)
-  {
-    boolean wasRemoved = false;
-    wasRemoved = hand.remove(aHand);
-    return wasRemoved;
   }
 
   public Point getLocation()
@@ -308,64 +313,34 @@ public class Player extends Token
   {
     return character;
   }
-  /* Code from template attribute_GetMany */
-  public Card getHand(int index)
-  {
-    Card aHand = hand.get(index);
-    return aHand;
-  }
 
-  public Card[] getHand()
-  {
-    Card[] newHand = hand.toArray(new Card[hand.size()]);
-    return newHand;
-  }
-
-  public int numberOfHand()
-  {
-    int number = hand.size();
-    return number;
-  }
-
-  public boolean hasHand()
-  {
-    boolean has = hand.size() > 0;
-    return has;
-  }
-
-  public int indexOfHand(Card aHand)
-  {
-    int index = hand.indexOf(aHand);
-    return index;
-  }
-  /* Code from template association_GetMany */
   public Card getCard(int index)
   {
-    Card aCard = cards.get(index);
+    Card aCard = hand.get(index);
     return aCard;
   }
 
-  public List<Card> getCards()
+  public List<Card> getHand()
   {
-    List<Card> newCards = Collections.unmodifiableList(cards);
+    List<Card> newCards = Collections.unmodifiableList(hand);
     return newCards;
   }
 
   public int numberOfCards()
   {
-    int number = cards.size();
+    int number = hand.size();
     return number;
   }
 
   public boolean hasCards()
   {
-    boolean has = cards.size() > 0;
+    boolean has = hand.size() > 0;
     return has;
   }
 
   public int indexOfCard(Card aCard)
   {
-    int index = cards.indexOf(aCard);
+    int index = hand.indexOf(aCard);
     return index;
   }
   /* Code from template association_MinimumNumberOfMethod */
@@ -377,8 +352,8 @@ public class Player extends Token
   public boolean addCard(Card aCard)
   {
     boolean wasAdded = false;
-    if (cards.contains(aCard)) { return false; }
-    cards.add(aCard);
+    if (hand.contains(aCard)) { return false; }
+    hand.add(aCard);
     wasAdded = true;
     return wasAdded;
   }
@@ -386,9 +361,9 @@ public class Player extends Token
   public boolean removeCard(Card aCard)
   {
     boolean wasRemoved = false;
-    if (cards.contains(aCard))
+    if (hand.contains(aCard))
     {
-      cards.remove(aCard);
+      hand.remove(aCard);
       wasRemoved = true;
     }
     return wasRemoved;
@@ -401,8 +376,8 @@ public class Player extends Token
     {
       if(index < 0 ) { index = 0; }
       if(index > numberOfCards()) { index = numberOfCards() - 1; }
-      cards.remove(aCard);
-      cards.add(index, aCard);
+      hand.remove(aCard);
+      hand.add(index, aCard);
       wasAdded = true;
     }
     return wasAdded;
@@ -411,12 +386,12 @@ public class Player extends Token
   public boolean addOrMoveCardAt(Card aCard, int index)
   {
     boolean wasAdded = false;
-    if(cards.contains(aCard))
+    if(hand.contains(aCard))
     {
       if(index < 0 ) { index = 0; }
       if(index > numberOfCards()) { index = numberOfCards() - 1; }
-      cards.remove(aCard);
-      cards.add(index, aCard);
+      hand.remove(aCard);
+      hand.add(index, aCard);
       wasAdded = true;
     } 
     else 
@@ -428,7 +403,7 @@ public class Player extends Token
 
   public void delete()
   {
-    cards.clear();
+    hand.clear();
     super.delete();
   }
 

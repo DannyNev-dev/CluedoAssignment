@@ -58,9 +58,12 @@ public class Card
    * @return
    */
   public boolean equals(Object o) {
+    System.out.println("at here");
     if(o instanceof Card) { //check if same class
+      System.out.println("AA");
       Card c = (Card) o;
       if(c.name.equals(this.name)) {
+        System.out.println("BB");
         return true;
       }
     }

@@ -12,29 +12,11 @@ public class Game
 
   //Game Attributes
   private List<Card> envelope;  //order of solution is character, weapon then room
-  private List<List<Card>> accusations;
+  private List<Card[]> accusations;
   
   private Boolean gameOver = false;
 
   //Game Associations
-
- /* final Point CHARACTERLOC[] = {
-          new Point(0,9),
-          new Point(0, 14),
-          new Point(6, 23),
-          new Point(19, 23),
-          new Point(24, 7),
-          new Point(17, 0)
-  };
-  final char[] CHARACTERSYMBOL = {
-          's',
-          'm',
-          'w',
-          'g',
-          'k',
-          'p',
-  };*/
-
   public static final Player PLAYERS[] = {
           new Player(new Point(0, 9), 's'),   //Miss Scarlett
           new Player(new Point(0, 14), 'm'),  //Colonel Mustard
@@ -56,15 +38,6 @@ public class Game
   private Board board;
   private List<Tile> tiles;
   private Stack<Card> cards;
-
-  /*final static char[] WEAPONSYMBOL = {
-		  'c',
-		  'd',
-		  'l',
-		  'r',
-		  'o',
-		  'a'
-  };*/
   
   final static char[] ROOMSYMBOL = {
 		  'K',
@@ -86,7 +59,7 @@ public class Game
   {
     //initialise objects
     envelope = new ArrayList<Card>();
-    accusations = new ArrayList<List<Card>>();
+    accusations = new ArrayList<Card[]>();
     //players = new ArrayList<Player>();
     tiles = new ArrayList<Tile>();
     cards = new Stack<Card>();
@@ -124,12 +97,10 @@ public class Game
     	if(i <= numPlayers-1) {
     	    PLAYERS[i].setIsActive(true);
     	    PLAYERS[i].setCanWin(true);
-    		//players.add(new Player(CHARACTERLOC[i], true, CHARACTERSYMBOL[i]));
     	}
     	else {
             PLAYERS[i].setIsActive(false);
             PLAYERS[i].setCanWin(false);
-    		//players.add(new Player(CHARACTERLOC[i], false, CHARACTERSYMBOL[i]));
     	}
     }
 
@@ -142,21 +113,6 @@ public class Game
 
     initDeck();
     dealCards();    //give out deck to the players
-      // testing that hands and solution are correct
-   System.out.print("solution = ");
-   for(int i = 0; i < 3; i++) {
-       System.out.print(envelope.get(i)+" ");
-   }
-   System.out.println();
-   for(Player p : PLAYERS) {
-       if(p.getIsActive()) {
-           System.out.print(p.getCharacter() + " hand = ");
-           for (Card c : p.getHand()) {
-               System.out.print(c.getName() + " ");
-           }
-           System.out.println();
-       }
-   }
   }
   
   public void gamePlay() {
@@ -165,44 +121,10 @@ public class Game
 	while(!gameOver) {
         for(Player player : PLAYERS) { //go through all active player
             if(player.getIsActive()) {
-                System.out.println("Current player is: "+player.getSymbol());
-                int numMoves = rollDice();  //roll dice
-                // list of player moves in a turn
-                List<Point> moveLog = new ArrayList<>();
-                //now let player move until run out of moves, no available moves or in new room and player accepted query
-                System.out.println("numMoves = "+numMoves);
-                boolean finishTurnEarly = false;    //for when no more available moves
-                for(int i = 0; i < numMoves && !finishTurnEarly; i++) {
-                    char inputChar = '\0';
-                    while(true) {
-                        System.out.println("Please select a direction to move:");
-                        System.out.println("Forward: 'w',  Left: 'a', Right: 'd', Down: 's'");
-                        inputChar = s.next().charAt(0);
-                        System.out.println("char  = "+inputChar);
-                        if(inputChar != 'w' && inputChar != 'a' && inputChar != 'd' && inputChar != 's') {
-                            System.out.println("ERROR: invalid input!");
-                            System.out.println();
-                        }
-                        else break;
-                    }
-                    int outcome = move(player, inputChar, moveLog);
-                    switch (outcome) {
-                        case 1: //invalid move
-                            i--;
-                            break;
-                        case 2: //no valid moves
-                            finishTurnEarly = true;
-                            break;
-                    }
-                    System.out.println((numMoves-i)+" moves left");
-                }
+            	turn(player,s);               
             }
         }
 	}
-	
-	//move(PLAYERS[0], 's');
-	//Player p = new Player(new Point(1, 9), 's');
-	//move(p, 'a');
   }
 
 public static void main(String[] args){
@@ -255,31 +177,90 @@ public static void main(String[] args){
 
     // partial turn play to test move method
     // need to add suggest, accuse refute...
-    //public void turn(Player p){
-       /* moveLog = new ArrayList<Point>();
-        int movesLeft = rollDice();
-
-        while(movesLeft != 0) {
-            // if the move is valid
-            if(validMove(p.getLocation())) {
-                // add the move to the moveLog
-                moveLog.add(p.getLocation());
-                // call move
-                move(p, 's');
-            }
-        }
-        */
-    //}
+    public void turn(Player p, Scanner s){  
+    	 System.out.println("Current player is: "+p.getSymbol());
+         int numMoves = rollDice();  //roll dice
+         // list of player moves in a turn
+         List<Point> moveLog = new ArrayList<>();
+         //now let player move until run out of moves, no available moves or in new room and player accepted query
+         System.out.println("number of moves rolled = "+numMoves);
+         boolean finishTurnEarly = false;    //for when no more available moves
+         for(int i = 0; i < numMoves && !finishTurnEarly; i++) {
+             char inputChar = '\0';
+             while(true) {
+                 System.out.println("Please select a direction to move:");
+                 System.out.println("Forward: 'w',  Left: 'a', Right: 'd', Down: 's'");
+                 inputChar = s.next().charAt(0);
+                 System.out.println("char  = "+inputChar);
+                 if(inputChar != 'w' && inputChar != 'a' && inputChar != 'd' && inputChar != 's') {
+                     System.out.println("ERROR: invalid input!");
+                     System.out.println();
+                 }
+                 else break;
+             }
+             int outcome = move(p, inputChar, moveLog);
+             switch (outcome) {
+                 case 1: //invalid move
+                     i--;
+                     break;
+                 case 2: //no valid moves
+                     finishTurnEarly = true;
+                     break;
+             }
+             System.out.println((numMoves-i)+" moves left");
+         }
+         //check if player is in a room, if so, call make suggestion
+         Card[] suggestion = null;
+         
+         boolean refuted = false;
+         if(board.getGrid()[p.getLocation().x][p.getLocation().y] instanceof RoomTile) {
+        	 System.out.println("Time to make a SUGGESTION!");
+        	 suggestion = p.makeSuggestion(board, this);	//ask and get suggestion from player
+        	 for(Player player : PLAYERS) {
+                 if(player.getIsActive() && player!=p) {
+                	 //print player hand and check for refute card                    
+                     for (Card c : player.getHand()) {                    	                     
+                         for(Card sCard: suggestion) {
+                        	 if(c.equals(sCard)) {
+                            	 System.out.println("Refute card found! by Player: " + p.getCharacter());
+                            	 refuted=true;
+                            	 break;
+                             }
+                         }
+                         if(refuted) {break;} // couldn't remember if it breaks out of both                        
+                     }                                                                                             
+                 }
+             }
+         if(refuted==false) {accusations.add(suggestion);System.out.println("No refute card found, Suggestion noted");}
+         }
+         //asks the player if he would like to make an accusation
+         if(p.getCanWin()) {
+        	 while(true) {
+                 System.out.println("Would you like to make an accusation? 1 = Y 2 = N");
+                  char inputChar = s.next().charAt(0);
+                 if(inputChar == 'Y') {
+                	 int result = p.makeAccusation(accusations, envelope);
+                	 if(result==1) {System.out.println(p.getCharacter() + " WINS! ");System.exit(0);}
+                	 else if(result == 0) {p.setCanWin(false);break;}
+                	 else {
+                	     break;
+                     }
+                 }
+                 else if(inputChar == 'N') {System.out.println("Next players turn!");break;}
+                 else {System.out.println("INCORRECT INPUT!");continue;}
+                 } 
+         }                 
+    }
 
     // checks if players next move is a valid move
     public boolean validMove(Point newPos, Point oldPos, boolean checkingMainMove, List<Point> moveLog) {
 
         //check that is within board bounds
         if(newPos.y < 0
-                || newPos.y >= Board.HEIGHT
+                || newPos.x >= Board.HEIGHT
                 || newPos.x < 0
-                || newPos.x >= Board.WIDTH
-                || board.getGrid()[newPos.y][newPos.y].getUnderlyingSymbol() == '.') {
+                || newPos.y >= Board.WIDTH
+                || board.getGrid()[newPos.y][newPos.x].getUnderlyingSymbol() == '.') {
             if(checkingMainMove) {
                 System.out.println("Invalid move! Goes out of bounds");
                 board.printBoard();
@@ -395,28 +376,6 @@ public static void main(String[] args){
     //------------------------
   // INTERFACE
   //------------------------
-  /* Code from template attribute_SetMany */
-//  public boolean addEnvelope(Card aEnvelope)
-//  {
-//    boolean wasAdded = false;
-//    wasAdded = envelope.add(aEnvelope);
-//    return wasAdded;
-//  }
-//
-//  public boolean removeEnvelope(Card aEnvelope)
-//  {
-//    boolean wasRemoved = false;
-//    wasRemoved = envelope.remove(aEnvelope);
-//    return wasRemoved;
-//  }
-  /* Code from template attribute_SetMany */
-//  public boolean addAccusation(String aAccusation)
-//  {
-//    boolean wasAdded = false;
-//    wasAdded = accusations.add(aAccusation);
-//    return wasAdded;
-//  }
-
   public boolean removeAccusation(String aAccusation)
   {
     boolean wasRemoved = false;
@@ -491,67 +450,6 @@ public static void main(String[] args){
   }
   
   /* Code from template association_GetMany */
-  /*ublic Player getPlayer(int index)
-  {
-    Player aPlayer = players.get(index);
-    return aPlayer;
-  }
-
-  public List<Player> getPlayers()
-  {
-    List<Player> newPlayers = Collections.unmodifiableList(players);
-    return newPlayers;
-  }
-
-  public int numberOfPlayers()
-  {
-    int number = players.size();
-    return number;
-  }
-
-  public boolean hasPlayers()
-  {
-    boolean has = players.size() > 0;
-    return has;
-  }
-
-  public int indexOfPlayer(Player aPlayer)
-  {
-    int index = players.indexOf(aPlayer);
-    return index;
-  }
-//  /* Code from template association_GetMany */
-//  public Tile getTile(int index)
-//  {
-//    Tile aTile = tiles.get(index);
-//    return aTile;
-//  }
-//
-//  public List<Tile> getTiles()
-//  {
-//    List<Tile> newTiles = Collections.unmodifiableList(tiles);
-//    return newTiles;
-//  }
-//
-//  public int numberOfTiles()
-//  {
-//    int number = tiles.size();
-//    return number;
-//  }
-//
-//  public boolean hasTiles()
-//  {
-//    boolean has = tiles.size() > 0;
-//    return has;
-//  }
-//
-//  public int indexOfTile(Tile aTile)
-//  {
-//    int index = tiles.indexOf(aTile);
-//    return index;
-//  }
-  
-  /* Code from template association_GetMany */
   public Card getCard(int index)
   {
     Card aCard = cards.get(index);
@@ -603,247 +501,6 @@ public static void main(String[] args){
   {
     return 6;
   }
-  
-  /* Code from template association_AddUnidirectionalMN */
-  /*public boolean addPlayer(Player aPlayer)
-  {
-    boolean wasAdded = false;
-    if (players.contains(aPlayer)) { return false; }
-    if (numberOfPlayers() < maximumNumberOfPlayers())
-    {
-      players.add(aPlayer);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean removePlayer(Player aPlayer)
-  {
-    boolean wasRemoved = false;
-    if (!players.contains(aPlayer))
-    {
-      return wasRemoved;
-    }
-
-    if (numberOfPlayers() <= minimumNumberOfPlayers())
-    {
-      return wasRemoved;
-    }
-
-    players.remove(aPlayer);
-    wasRemoved = true;
-    return wasRemoved;
-  }
-  /* Code from template association_SetUnidirectionalMN */
-  /*public boolean setPlayers(Player... newPlayers)
-  {
-    boolean wasSet = false;
-    ArrayList<Player> verifiedPlayers = new ArrayList<Player>();
-    for (Player aPlayer : newPlayers)
-    {
-      if (verifiedPlayers.contains(aPlayer))
-      {
-        continue;
-      }
-      verifiedPlayers.add(aPlayer);
-    }
-
-    if (verifiedPlayers.size() != newPlayers.length || verifiedPlayers.size() < minimumNumberOfPlayers() || verifiedPlayers.size() > maximumNumberOfPlayers())
-    {
-      return wasSet;
-    }
-
-    players.clear();
-    players.addAll(verifiedPlayers);
-    wasSet = true;
-    return wasSet;
-  }
-  /* Code from template association_AddIndexControlFunctions */
-  /*public boolean addPlayerAt(Player aPlayer, int index)
-  {  
-    boolean wasAdded = false;
-    if(addPlayer(aPlayer))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
-      players.remove(aPlayer);
-      players.add(index, aPlayer);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean addOrMovePlayerAt(Player aPlayer, int index)
-  {
-    boolean wasAdded = false;
-    if(players.contains(aPlayer))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
-      players.remove(aPlayer);
-      players.add(index, aPlayer);
-      wasAdded = true;
-    } 
-    else 
-    {
-      wasAdded = addPlayerAt(aPlayer, index);
-    }
-    return wasAdded;
-  }
-//  /* Code from template association_MinimumNumberOfMethod */
-//  public static int minimumNumberOfTiles()
-//  {
-//    return 0;
-//  }
-//  /* Code from template association_AddUnidirectionalMany */
-//  public boolean addTile(Tile aTile)
-//  {
-//    boolean wasAdded = false;
-//    if (tiles.contains(aTile)) { return false; }
-//    tiles.add(aTile);
-//    wasAdded = true;
-//    return wasAdded;
-//  }
-//
-//  public boolean removeTile(Tile aTile)
-//  {
-//    boolean wasRemoved = false;
-//    if (tiles.contains(aTile))
-//    {
-//      tiles.remove(aTile);
-//      wasRemoved = true;
-//    }
-//    return wasRemoved;
-//  }
-//  /* Code from template association_AddIndexControlFunctions */
-//  public boolean addTileAt(Tile aTile, int index)
-//  {  
-//    boolean wasAdded = false;
-//    if(addTile(aTile))
-//    {
-//      if(index < 0 ) { index = 0; }
-//      if(index > numberOfTiles()) { index = numberOfTiles() - 1; }
-//      tiles.remove(aTile);
-//      tiles.add(index, aTile);
-//      wasAdded = true;
-//    }
-//    return wasAdded;
-//  }
-//
-//  public boolean addOrMoveTileAt(Tile aTile, int index)
-//  {
-//    boolean wasAdded = false;
-//    if(tiles.contains(aTile))
-//    {
-//      if(index < 0 ) { index = 0; }
-//      if(index > numberOfTiles()) { index = numberOfTiles() - 1; }
-//      tiles.remove(aTile);
-//      tiles.add(index, aTile);
-//      wasAdded = true;
-//    } 
-//    else 
-//    {
-//      wasAdded = addTileAt(aTile, index);
-//    }
-//    return wasAdded;
-//  }
-//  /* Code from template association_MinimumNumberOfMethod */
-//  public static int minimumNumberOfCards()
-//  {
-//    return 0;
-//  }
-//  /* Code from template association_MaximumNumberOfMethod */
-//  public static int maximumNumberOfCards()
-//  {
-//    return 21;
-//  }
-//  /* Code from template association_AddUnidirectionalOptionalN */
-//  public boolean addCard(Card aCard)
-//  {
-//    boolean wasAdded = false;
-//    if (cards.contains(aCard)) { return false; }
-//    if (numberOfCards() < maximumNumberOfCards())
-//    {
-//      cards.add(aCard);
-//      wasAdded = true;
-//    }
-//    return wasAdded;
-//  }
-//
-//  public boolean removeCard(Card aCard)
-//  {
-//    boolean wasRemoved = false;
-//    if (cards.contains(aCard))
-//    {
-//      cards.remove(aCard);
-//      wasRemoved = true;
-//    }
-//    return wasRemoved;
-//  }
-//  /* Code from template association_SetUnidirectionalOptionalN */
-//  public boolean setCards(Card... newCards)
-//  {
-//    boolean wasSet = false;
-//    ArrayList<Card> verifiedCards = new ArrayList<Card>();
-//    for (Card aCard : newCards)
-//    {
-//      if (verifiedCards.contains(aCard))
-//      {
-//        continue;
-//      }
-//      verifiedCards.add(aCard);
-//    }
-//
-//    if (verifiedCards.size() != newCards.length || verifiedCards.size() > maximumNumberOfCards())
-//    {
-//      return wasSet;
-//    }
-//
-//    cards.clear();
-//    cards.addAll(verifiedCards);
-//    wasSet = true;
-//    return wasSet;
-//  }
-//  /* Code from template association_AddIndexControlFunctions */
-//  public boolean addCardAt(Card aCard, int index)
-//  {  
-//    boolean wasAdded = false;
-//    if(addCard(aCard))
-//    {
-//      if(index < 0 ) { index = 0; }
-//      if(index > numberOfCards()) { index = numberOfCards() - 1; }
-//      cards.remove(aCard);
-//      cards.add(index, aCard);
-//      wasAdded = true;
-//    }
-//    return wasAdded;
-//  }
-//
-//  public boolean addOrMoveCardAt(Card aCard, int index)
-//  {
-//    boolean wasAdded = false;
-//    if(cards.contains(aCard))
-//    {
-//      if(index < 0 ) { index = 0; }
-//      if(index > numberOfCards()) { index = numberOfCards() - 1; }
-//      cards.remove(aCard);
-//      cards.add(index, aCard);
-//      wasAdded = true;
-//    } 
-//    else 
-//    {
-//      wasAdded = addCardAt(aCard, index);
-//    }
-//    return wasAdded;
-//  }
-//
-//  public void delete()
-//  {
-//    board = null;
-//   // players.clear();
-//    tiles.clear();
-//    cards.clear();
-//  }
 
     // line 76 "model.ump"
 
@@ -950,13 +607,7 @@ public static void main(String[] args){
 
   // 2 dice roll
   public int rollDice(){
-	  int randomNum = (int)((Math.random() * 12) + 2);
+	  int randomNum = (int)((Math.random() * (12-2)) + 2);
 	  return randomNum;
   }
-
-//  public String toString()
-//  {
-//    return super.toString() + "["+ "]" + System.getProperties().getProperty("line.separator") +
-//            "  " + "board = "+(getBoard()!=null?Integer.toHexString(System.identityHashCode(getBoard())):"null");
-//  }
 }
