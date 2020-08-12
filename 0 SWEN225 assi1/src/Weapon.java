@@ -1,3 +1,6 @@
+/**
+ * represents a "physical" weapon in the game
+ */
 public class Weapon extends Token
 {
   //------------------------

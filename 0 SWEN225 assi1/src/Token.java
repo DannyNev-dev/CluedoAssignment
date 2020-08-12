@@ -1,3 +1,6 @@
+/**
+ * Represents a token in the game, this token can be a game or a character/player
+ */
 public abstract class Token
 {
   //------------------------
@@ -7,7 +10,6 @@ public abstract class Token
   //------------------------
   // CONSTRUCTOR
   //------------------------
-
   public Token()
   {}
 

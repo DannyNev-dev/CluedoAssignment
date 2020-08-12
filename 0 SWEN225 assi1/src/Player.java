@@ -7,6 +7,9 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
+/**
+ * Represents a character/player in the game
+ */
 // line 86 "model.ump"
 // line 170 "model.ump"
 public class Player extends Token
@@ -18,14 +21,14 @@ public class Player extends Token
 
   //Player Attributes
 
-  private Point location;
-  private char character;
-  private boolean isActive;
-  private boolean canWin;
+  private Point location;     //current location of player on the board
+  private char character;     //character that represents this player
+  private boolean isActive;   //checks if the character will be played by a player in this game
+  private boolean canWin;     //checks that the player is allowed to make suggestion and accusations
   //private List<Card> hand;
 
   //Player Associations
-  private List<Card> hand;
+  private List<Card> hand;    //hand of cards that each player has
 
   //------------------------
   // CONSTRUCTOR
@@ -40,23 +43,15 @@ public class Player extends Token
     hand = new ArrayList<Card>();
   }
 
-  public Player(Point aLocation, boolean isActive, char aCharacter, boolean canWin)
-  {
-    super();
-    location = aLocation;
-    this.isActive = isActive;
-    character = aCharacter;
-    this.canWin = canWin;
-    //hand = new ArrayList<Card>();
-    hand = new ArrayList<Card>();
-  }
-
+  /**
+   * returns the char symbol of the character that this player represents
+   * @return
+   */
   public char getSymbol() {
     return character;
   }
 
   // line 95 "model.ump"
-
   /**
    * if player wants to make a suggestion and can do it, this function is called
    * @param board for getting the weapons and char
@@ -291,14 +286,6 @@ public class Player extends Token
   }
   public boolean getCanWin() {return this.canWin;}
 
-  public boolean setCharacter(char aCharacter)
-  {
-    boolean wasSet = false;
-    character = aCharacter;
-    wasSet = true;
-    return wasSet;
-  }
-
   public Point getLocation()
   {
     return location;
@@ -410,6 +397,5 @@ public class Player extends Token
   // line 94 "model.ump"
    public String toString(){
 	return String.valueOf(character);
-    
   }
 }

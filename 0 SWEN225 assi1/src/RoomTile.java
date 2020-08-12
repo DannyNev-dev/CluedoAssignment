@@ -1,5 +1,8 @@
 import java.awt.Point;
 
+/**
+ * Stores the room tile for the board
+ */
 public class RoomTile extends Tile
 {
   //------------------------
