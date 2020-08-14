@@ -1,32 +1,34 @@
 import java.awt.Point;
 
+/**
+ * Stores the invalid tile for the board
+ */
 public class InvalidTile extends Tile
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public InvalidTile(Point aLocation, char aSymbol, Token token)
-  {
-    super(aLocation, aSymbol, token);
-  }
+	public InvalidTile(Point aLocation, char aSymbol, Token token)
+	{
+		super(aLocation, aSymbol, token);
+	}
 
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public void delete()
-  {
-    super.delete();
-  }
+	public void delete()
+	{
+		super.delete();
+	}
 
-  // line 34 "model.ump"
-  public String toString(){
-	return ".";    
-  }
+	public String toString(){
+		return ".";    
+	}
 }

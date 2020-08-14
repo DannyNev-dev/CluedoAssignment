@@ -3,51 +3,50 @@
  */
 public class Weapon extends Token
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //Weapon Attributes
-  private char name;
+	//Weapon Attributes
+	private char name;
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public Weapon(char aName)
-  {
-    super();
-    name = aName;
-  }
+	public Weapon(char aName)
+	{
+		super();
+		name = aName;
+	}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public boolean setName(char aName)
-  {
-    boolean wasSet = false;
-    name = aName;
-    wasSet = true;
-    return wasSet;
-  }
+	public boolean setName(char aName)
+	{
+		boolean wasSet = false;
+		name = aName;
+		wasSet = true;
+		return wasSet;
+	}
 
-  public char getName()
-  {
-    return name;
-  }
+	public char getName()
+	{
+		return name;
+	}
 
-  public void delete()
-  {
-    super.delete();
-  }
+	public void delete()
+	{
+		super.delete();
+	}
 
-  public char getSymbol() {
-    return name;
-  }
+	public char getSymbol() {
+		return name;
+	}
 
-  // line 44 "model.ump"
-   public String toString(){
-	return null;
-  }
+	public String toString(){
+		return null;
+	}
 }

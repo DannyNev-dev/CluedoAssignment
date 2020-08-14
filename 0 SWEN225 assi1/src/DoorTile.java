@@ -1,31 +1,33 @@
 import java.awt.Point;
 
+/**
+ * Stores the door tile for the board
+ */
 public class DoorTile extends Tile
 {
-	  //------------------------
-	  // MEMBER VARIABLES
-	  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-	  //------------------------
-	  // CONSTRUCTOR
-	  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-	  public DoorTile(Point aLocation, char aSymbol, Token token)
-	  {
-	    super(aLocation, aSymbol, token);
-	  }
+	public DoorTile(Point aLocation, char aSymbol, Token token)
+	{
+		super(aLocation, aSymbol, token);
+	}
 
-	  //------------------------
-	  // INTERFACE
-	  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-	  public void delete()
-	  {
-	    super.delete();
-	  }
+	public void delete()
+	{
+		super.delete();
+	}
 
-	  // line 22 "model.ump"
-	  public String toString(){
+	public String toString(){
 		return String.valueOf(super.getSymbol());
-	  }
+	}
 }

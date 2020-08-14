@@ -1,24 +1,24 @@
 /**
- * Represents a token in the game, this token can be a game or a character/player
+ * Represents a token in the game, this token can be a weapon or a character/player
  */
 public abstract class Token
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
-  public Token()
-  {}
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
+	public Token()
+	{}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public void delete()
-  {}
+	public void delete()
+	{}
 
-  abstract public char getSymbol();
+	abstract public char getSymbol();
 }

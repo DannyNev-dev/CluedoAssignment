@@ -3,297 +3,117 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collector;
 
+/**
+ * Represents a board of tiles for the game
+ */
 public class Board
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  public static final int HEIGHT = 25;
-  public static final int WIDTH = 24;
+	public static final int HEIGHT = 25;
+	public static final int WIDTH = 24;
 
-  //Board Associations
-  private Tile[][] tiles;
-  private List<Weapon> weapons;
+	//Board Associations
+	private Tile[][] tiles;
+	private List<Weapon> weapons;
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public Board(String[] boardData)
-  {
-    tiles = new Tile[HEIGHT][WIDTH];
-    //add data to each tile
-    for(int i = 0; i < tiles.length; i++) {
-      Tile[] row = tiles[i];
-     // System.out.println("row: "+boardData[i]);
-      for(int j = 0; j < row.length; j++) {
-        //check which tile is it
-        char c = boardData[i].charAt(j);
-        switch(c) {
-          case '.': //invalid tile
-            tiles[i][j] = new InvalidTile(new Point(i, j), c, null);
-            break;
-          case '*': //for the hallway tiles and the hall tiles that are where the characters first start
-            tiles[i][j] = new HallTile(new Point(i, j), null);
-            break;
-          case 'w':
-            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[0]);
-            break;
-          case 'g':
-            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[1]);
-            break;
-          case 'k':
-            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[2]);
-            break;
-          case 'p':
-            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[3]);
-            break;
-          case 's':
-            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[4]);
-            break;
-          case 'm':
-            tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[5]);
-            break;
-          case '|': // door can only be entered on the vertical
-        	  tiles[i][j] = new DoorTile(new Point(i, j), c, null);
-        	  break;
-          case '-': 
-        	  tiles[i][j] = new DoorTile(new Point(i, j), c, null);
-        	  break;
-          default:  //for the room tiles
-            tiles[i][j] = new RoomTile(new Point(i, j), c, null);
-            break;
-        }
-      }
-    }
-    weapons = new ArrayList<>();
-    //initialise weapons
-    for(int i = 0; i < 6; i++) {
-      weapons.add(Game.WEAPONS[i]);
-    }
-    //shuffle weapon's list and add to rooms
-    Collections.shuffle(weapons);
-    //search for kitchen and add weapon to kitchen
-    //TO DO HERE
-    //for each weapon place them in the first encountered tile of the room
-    for(int j = 0; j < 6; j++) {
-    	Point p = new Point(searchFor(Game.ROOMSYMBOL[j]));
-        tiles[(int) p.getX()][(int) p.getY()] = new RoomTile(p, Game.ROOMSYMBOL[j], weapons.get(j));
-    }
+	public Board(String[] boardData)
+	{
+		tiles = new Tile[HEIGHT][WIDTH];
+		//add data to each tile
+		for(int i = 0; i < tiles.length; i++) {
+			Tile[] row = tiles[i];
+			// System.out.println("row: "+boardData[i]);
+			for(int j = 0; j < row.length; j++) {
+				//check which tile is it
+				char c = boardData[i].charAt(j);
+				switch(c) {
+				case '.': //invalid tile
+					tiles[i][j] = new InvalidTile(new Point(i, j), c, null);
+					break;
+				case '*': //for the hallway tiles and the hall tiles that are where the characters first start
+					tiles[i][j] = new HallTile(new Point(i, j), null);
+					break;
+				case 'w': //Mrs White
+					tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[0]);
+					break;
+				case 'g': //Mr Green
+					tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[1]);
+					break;
+				case 'k': //Mrs Peacock
+					tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[2]);
+					break;
+				case 'p': //Professor Plum
+					tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[3]);
+					break;
+				case 's': //Miss Scarlett
+					tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[4]);
+					break;
+				case 'm': //Colonel Mustard
+					tiles[i][j] = new HallTile(new Point(i, j),  Game.PLAYERS[5]);
+					break;
+				case '|': // door can only be entered on the vertical
+					tiles[i][j] = new DoorTile(new Point(i, j), c, null);
+					break;
+				case '-': 
+					tiles[i][j] = new DoorTile(new Point(i, j), c, null);
+					break;
+				default:  //for the room tiles
+					tiles[i][j] = new RoomTile(new Point(i, j), c, null);
+					break;
+				}
+			}
+		}
+		weapons = new ArrayList<>();
+		//Initialize weapons
+		for(int i = 0; i < 6; i++) {
+			weapons.add(Game.WEAPONS[i]);
+		}
+		//shuffle weapon's list and add to rooms
+		Collections.shuffle(weapons);
+		//for each weapon place them in the first encountered tile of the room
+		for(int j = 0; j < 6; j++) {
+			Point p = new Point(searchFor(Game.ROOMSYMBOL[j]));
+			tiles[(int) p.getX()][(int) p.getY()] = new RoomTile(p, Game.ROOMSYMBOL[j], weapons.get(j));
+		}
+	}
 
-   /* tiles = new ArrayList<Tile>();
-    weapons = new ArrayList<Weapon>();
-    boolean didAddWeapons = setWeapons(allWeapons);
-    if (!didAddWeapons)
-    {
-      throw new RuntimeException("Unable to create Board, must have 6 weapons. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }*/
-  }
+	/**
+	 * searches for first occurrence of the character in the board
+	 * @param c character to search for
+	 * @return
+	 */
+	public Point searchFor(char c) {
+		for(int i = 0; i < HEIGHT; i++) {
+			for(int j = 0; j < WIDTH; j++) {
+				if(tiles[i][j].getSymbol() == c) {
+					return new Point(i, j);
+				}
+			}
+		}
+		System.out.println("ERROR: character not found in board");
+		return null;
+	}
 
-  /**
-   * searches for first occurance of the character in the board
-   * @param c character to search for
-   * @return
-   */
-  public Point searchFor(char c) {
-	  for(int i = 0; i < HEIGHT; i++) {
-		  for(int j = 0; j < WIDTH; j++) {
-			  if(tiles[i][j].getSymbol() == c) {
-				  return new Point(i, j);
-			  }
-		  }
-	  }
-	  System.out.println("ERROR: character not found in board");
-    return null;
-  }
+	/**
+	 * prints current state of board
+	 */
+	public void printBoard(){
+		for(Tile[] row : tiles) {
+			for(Tile t : row) {
+				System.out.print(t.getSymbol());
+			}
+			System.out.println();
+		}
+	}
 
-  /**
-   * prints current state of board
-   */
-  public void printBoard(){
-    for(Tile[] row : tiles) {
-      for(Tile t : row) {
-        System.out.print(t.getSymbol());
-      }
-      System.out.println();
-    }
-  }
-  
-  // gets board grid and returns it
-  public Tile[][] getGrid() {
+	public Tile[][] getGrid() {
 		return tiles;
 	}
-  
-  //------------------------
-  // INTERFACE
-  //------------------------
-  /* Code from template association_GetMany */
-  /*public Tile getTile(int index)
-  {
-    Tile aTile = tiles.get(index);
-    return aTile;
-  }
-
-  public List<List<Tile>> getTiles()
-  {
-    //change tiles into java list
-    List<List<Tile>> tilesList = new ArrayList<>();
-    for(int i = 0) {
-      ;
-    }
-
-    List<List<Tile>> newTiles = Collections.unmodifiableList(tilesList);
-    return newTiles;
-  }
-
-  public int numberOfTiles()
-  {
-    int number = tiles.size();
-    return number;
-  }
-
-  public boolean hasTiles()
-  {
-    boolean has = tiles.size() > 0;
-    return has;
-  }
-
-  public int indexOfTile(Tile aTile)
-  {
-    int index = tiles.indexOf(aTile);
-    return index;
-  }*/
-  /* Code from template association_GetMany */
-//  public Weapon getWeapon(int index)
-//  {
-//    Weapon aWeapon = weapons.get(index);
-//    return aWeapon;
-//  }
-//
-//  public List<Weapon> getWeapons()
-//  {
-//    List<Weapon> newWeapons = Collections.unmodifiableList(weapons);
-//    return newWeapons;
-//  }
-//
-//  public int numberOfWeapons()
-//  {
-//    int number = weapons.size();
-//    return number;
-//  }
-//
-//  public boolean hasWeapons()
-//  {
-//    boolean has = weapons.size() > 0;
-//    return has;
-//  }
-//
-//  public int indexOfWeapon(Weapon aWeapon)
-//  {
-//    int index = weapons.indexOf(aWeapon);
-//    return index;
-//  }
-//  /* Code from template association_MinimumNumberOfMethod */
-//  public static int minimumNumberOfTiles()
-//  {
-//    return 0;
-//  }
-  /* Code from template association_AddUnidirectionalMany */
- /* public boolean addTile(Tile aTile)
-  {
-    boolean wasAdded = false;
-    if (tiles.contains(aTile)) { return false; }
-    tiles.add(aTile);
-    wasAdded = true;
-    return wasAdded;
-  }
-
-  public boolean removeTile(Tile aTile)
-  {
-    boolean wasRemoved = false;
-    if (tiles.contains(aTile))
-    {
-      tiles.remove(aTile);
-      wasRemoved = true;
-    }
-    return wasRemoved;
-  }
-  /* Code from template association_AddIndexControlFunctions */
-  /*public boolean addTileAt(Tile aTile, int index)
-  {  
-    boolean wasAdded = false;
-    if(addTile(aTile))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfTiles()) { index = numberOfTiles() - 1; }
-      tiles.remove(aTile);
-      tiles.add(index, aTile);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean addOrMoveTileAt(Tile aTile, int index)
-  {
-    boolean wasAdded = false;
-    if(tiles.contains(aTile))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfTiles()) { index = numberOfTiles() - 1; }
-      tiles.remove(aTile);
-      tiles.add(index, aTile);
-      wasAdded = true;
-    } 
-    else 
-    {
-      wasAdded = addTileAt(aTile, index);
-    }
-    return wasAdded;
-  }*/
-  /* Code from template association_RequiredNumberOfMethod */
-//  public static int requiredNumberOfWeapons()
-//  {
-//    return 6;
-//  }
-//  /* Code from template association_MinimumNumberOfMethod */
-//  public static int minimumNumberOfWeapons()
-//  {
-//    return 6;
-//  }
-//  /* Code from template association_MaximumNumberOfMethod */
-//  public static int maximumNumberOfWeapons()
-//  {
-//    return 6;
-//  }
-//  /* Code from template association_SetUnidirectionalN */
-//  public boolean setWeapons(Weapon... newWeapons)
-//  {
-//    boolean wasSet = false;
-//    ArrayList<Weapon> verifiedWeapons = new ArrayList<Weapon>();
-//    for (Weapon aWeapon : newWeapons)
-//    {
-//      if (verifiedWeapons.contains(aWeapon))
-//      {
-//        continue;
-//      }
-//      verifiedWeapons.add(aWeapon);
-//    }
-//
-//    if (verifiedWeapons.size() != newWeapons.length || verifiedWeapons.size() != requiredNumberOfWeapons())
-//    {
-//      return wasSet;
-//    }
-//
-//    weapons.clear();
-//    weapons.addAll(verifiedWeapons);
-//    wasSet = true;
-//    return wasSet;
-//  }
-//
-//  public void delete()
-//  {
-//    //tiles.clear();
-//    weapons.clear();
-//  }
 }

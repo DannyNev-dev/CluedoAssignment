@@ -1,24 +1,27 @@
+/**
+ * Stores the weapon card for the game deck
+ */
 public class WeaponCard extends Card
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public WeaponCard(String aName)
-  {
-    super(aName);
-  }
+	public WeaponCard(String aName)
+	{
+		super(aName);
+	}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public void delete()
-  {
-    super.delete();
-  }
+	public void delete()
+	{
+		super.delete();
+	}
 }

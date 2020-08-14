@@ -5,30 +5,29 @@ import java.awt.Point;
  */
 public class RoomTile extends Tile
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public RoomTile(Point aLocation, char aSymbol, Token token)
-  {
-    super(aLocation, aSymbol, token);
-  }
+	public RoomTile(Point aLocation, char aSymbol, Token token)
+	{
+		super(aLocation, aSymbol, token);
+	}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public void delete()
-  {
-    super.delete();
-  }
+	public void delete()
+	{
+		super.delete();
+	}
 
-  // line 22 "model.ump"
-  public String toString(){
-	return String.valueOf(super.getSymbol());
-  }
+	public String toString(){
+		return String.valueOf(super.getSymbol());
+	}
 }

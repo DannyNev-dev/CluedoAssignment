@@ -1,24 +1,27 @@
+/**
+ * Stores the room card for the game deck
+ */
 public class RoomCard extends Card
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public RoomCard(String aName)
-  {
-    super(aName);
-  }
+	public RoomCard(String aName)
+	{
+		super(aName);
+	}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public void delete()
-  {
-    super.delete();
-  }
+	public void delete()
+	{
+		super.delete();
+	}
 }

@@ -1,31 +1,33 @@
 import java.awt.Point;
 
+/**
+ * Stores the hall tile for the board
+ */
 public class HallTile extends Tile
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public HallTile(Point aLocation, Token token)
-  {
-    super(aLocation, '*', token);
-  }
+	public HallTile(Point aLocation, Token token)
+	{
+		super(aLocation, '*', token);
+	}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public void delete()
-  {
-    super.delete();
-  }
+	public void delete()
+	{
+		super.delete();
+	}
 
-  // line 28 "model.ump"
-  public String toString(){
-	return "*";   
-  }
+	public String toString(){
+		return "*";   
+	}
 }

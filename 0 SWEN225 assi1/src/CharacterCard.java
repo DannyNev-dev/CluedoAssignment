@@ -1,24 +1,27 @@
+/**
+ * Stores the character card for the game deck
+ */
 public class CharacterCard extends Card
 {
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public CharacterCard(String aName)
-  {
-    super(aName);
-  }
+	public CharacterCard(String aName)
+	{
+		super(aName);
+	}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public void delete()
-  {
-    super.delete();
-  }
+	public void delete()
+	{
+		super.delete();
+	}
 }
