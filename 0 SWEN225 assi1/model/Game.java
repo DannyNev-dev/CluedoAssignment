@@ -17,7 +17,7 @@ public class Game
 	//Game Attributes
 
 	private Board board;
-	private List<Tile> tiles;
+	//private List<Tile> tiles;
 	private Stack<Card> cards;
 	private List<Card> envelope;  //order of solution is character, weapon then room
 	private List<Card[]> accusations;
@@ -64,7 +64,7 @@ public class Game
 		//initialize objects
 		envelope = new ArrayList<Card>();
 		accusations = new ArrayList<Card[]>();
-		tiles = new ArrayList<Tile>();
+		//tiles = new ArrayList<Tile>();
 		cards = new Stack<Card>();
 
 		//read board file
@@ -82,7 +82,7 @@ public class Game
 		//create players
 		Scanner s; // = new Scanner(System.in);
 		int numPlayers = 0;
-		boolean hasError = true;
+		//boolean hasError = true;
 		while(numPlayers < 3 || numPlayers > 6) {
 			System.out.println("Please state number of players from 3 to 6:");
 			s = new Scanner(System.in); //get input
