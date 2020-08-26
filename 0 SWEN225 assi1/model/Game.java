@@ -59,7 +59,7 @@ public class Game
 	// CONSTRUCTOR
 	//------------------------
 
-	public Game() throws IOException
+	public Game(int numPlayers) throws IOException
 	{
 		//initialize objects
 		envelope = new ArrayList<Card>();
@@ -74,7 +74,7 @@ public class Game
 		} catch(IOException e) {
 			throw e;
 		}  
-
+		/*
 		System.out.println("Welcome to a Text-Based Cluedo");
 		System.out.println("Designed by Team 12");
 		System.out.println();
@@ -94,7 +94,7 @@ public class Game
 				System.out.println("ERROR: invalid character Please type down a character");
 			}
 		}
-
+		*/
 
 		for(int i = 0; i < 6; i++) {
 			if(i <= numPlayers-1) {
@@ -139,7 +139,7 @@ public class Game
 		//set up game
 		Game game;
 		try {
-			game = new Game();
+			game = new Game(1); //1 is here just for testing GUI without making game
 
 			// start game play
 			game.gamePlay();
