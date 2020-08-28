@@ -14,23 +14,23 @@ import javax.swing.JLabel;
  *
  */
 public class CardView extends JLabel{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3425093654815422748L;
 
-	public CardView(String s) {
-		super(s); // gives the parent a name for this component
-		String path = s + ".png";	//not sure if this will work
-		BufferedImage image = null;
-		try {
-			image = ImageIO.read(new File(path));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(image!=null) {setIcon(new ImageIcon(image));}		
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3425093654815422748L;
+
+    public CardView(String s) {
+        super(s); // gives the parent a name for this component
+        String path = s + ".png";	//not sure if this will work
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new File(path));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if(image!=null) {setIcon(new ImageIcon(image));}
+    }
 
 }

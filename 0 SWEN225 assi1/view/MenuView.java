@@ -4,29 +4,29 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class MainMenuView extends JFrame{
-
-    JFrame f;
-
-    public MainMenuView(){
-        //set up the window
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+public class MenuView extends JFrame{
+	
+	JFrame f;
+	
+	MenuView(){
+		 //set up the window
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
         setSize(305,250);
-        //set content pane to our desired JPanel object
-        setContentPane(createContentPane());
+        //set content pane to our desired JPanel object    
+        setContentPane(createContentPane());              
+        //pack();
         setVisible(true);
-    }
-
-    private JPanel createContentPane() {
-        //create panel and set background colour
-        JPanel contentPane = new JPanel(null);
+	}
+	
+	private JPanel createContentPane() {
+		//create panel and set background colour
+		JPanel contentPane = new JPanel(null);
         contentPane.setBackground(Color.red);
-
+        
         //Create GUI components
         JLabel label = new JLabel("Welcome to Cluedo!");	//Main Label
         label.setFont(label.getFont ().deriveFont (25.0f));
@@ -42,15 +42,11 @@ public class MainMenuView extends JFrame{
         contentPane.add(textLabel);
         contentPane.add(textInput);
         contentPane.add(confirmButton);
-
+        
         return contentPane;
-    }
-
-    public void wrongNumDialog() {
-        JOptionPane.showMessageDialog(f, "INVALID PLAYER NUMBER!");
-    }
-
-    public void badInputDialog() {
-        JOptionPane.showMessageDialog(f, "INVALID INPUT!\n Enter a number between 3-6");
+	}
+ 
+    public static void main(String[] args) {
+        new MenuView();
     }
 }
