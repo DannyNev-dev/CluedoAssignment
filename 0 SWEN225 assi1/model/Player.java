@@ -392,6 +392,23 @@ public class Player extends Token
 		super.delete();
 	}
 
+	public String getName() {
+		switch(character){
+			case 's':
+				return "Miss Scarlett";
+			case 'g':
+				return "Mr Green";
+			case 'k':
+				return "Mrs Peacock";
+			case 'p':
+				return "Prof Plum";
+			case 'm':
+				return "Col. Mustard";
+			default:
+				return "Mrs White";
+		}
+	}
+
 	public String toString(){
 		return String.valueOf(character);
 	}

@@ -23,8 +23,38 @@ public class Card
 	// INTERFACE
 	//------------------------
 
+	/**
+	 * returns card's file name
+	 * @return
+	 */
 	public String getName()
 	{
+		switch(name) {
+			case "Miss Scarlet":
+				return "scarlett";
+			case "Colonel Mustard":
+				return "mustard";
+			case "Mrs White":
+				return "white";
+			case "Mr Green":
+				return "green";
+			case "Mrs Peacock":
+				return "peacock";
+			case "Professor Plum":
+				return "plum";
+			case "candlestick":
+				return "candle";
+			case "dagger":
+				return "knife";
+			case "lead pipe":
+				return "pipe";
+			case "spanner":
+				return "rope";
+			case "billiard room":
+				return "billiard";
+			case "dining room":
+				return "dining";
+		}
 		return name;
 	}
 
