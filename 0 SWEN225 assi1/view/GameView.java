@@ -1,11 +1,17 @@
 package view;
 
 import java.awt.Dimension;
+import java.awt.List;
+import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import controller.GameController;
 import controller.MainMenuController;
@@ -44,7 +50,7 @@ public class GameView {
 		JMenuItem reset,newGame,controls;
 		//Initialize menu components
 		menu = new JMenu("Game"); helpMenu = new JMenu("Help");		
-		reset = new JMenuItem("Reset"); newGame = new JMenuItem("New Game"); controls = new JMenuItem("Controls");
+		reset = new JMenuItem("Reset"); newGame = new JMenuItem("NewGame"); controls = new JMenuItem("Controls");
 		//Add components to menus
 		menu.add(reset); menu.add(newGame);
 		helpMenu.add(controls);
@@ -54,10 +60,63 @@ public class GameView {
 	}
 	public void setGc(GameController gc) {this.gc = gc;}
 	
+	public JFrame getGameScreen() {
+		return this.gameScreen;
+	}
+	
+	public JFrame getMainMenu() {
+		return this.mainMenu;
+	}
+	public JFrame suggestionView() {
+		JFrame f = new JFrame("Suggestions");
+		f.setSize(new Dimension(800,800));
+		JPanel canvas = new JPanel(null);
+		ArrayList<CardView> characterCards;// = gc.getCharCards();	
+		ArrayList<CardView> weaponCards;// = gc.getWeaponCards();
+		//Create GUI components - TITLE
+        JLabel label = new JLabel("Time To make a suggestion!");
+        label.setFont(label.getFont ().deriveFont (25.0f));
+        label.setBounds(210,10, 400, 50);
+        JLabel textLabel = new JLabel("Select a character:"); 
+        textLabel.setBounds(10,60,200, 50);
+        // character cards      
+        /*int x = 10;
+        for(CardView cv: characterCards) {
+        	cv.setBounds(x,70,100,200);
+        	canvas.add(cv);  
+        	add a radio button with the cv's name underneath each card
+        	x+=110;
+        }*/
+        JLabel textLabel2 = new JLabel("Select a weapon:");
+        textLabel2.setBounds(10,400,200, 50);
+        // weapon cards         
+        /*x = 10;
+        for(CardView cv: weaponCards) {
+        	cv.setBounds(x,410,100,200);
+        	canvas.add(cv); 
+        	add a radio button with the cv's name underneath each card
+        	x+=110;
+        }*/
+        JButton confirmButton = new JButton("confirm");	//Button
+        confirmButton.setBounds(325,700,150,50);
+        //Add components to the content pane
+        canvas.add(label);
+        canvas.add(textLabel);
+        canvas.add(textLabel2);
+        canvas.add(confirmButton);
+        f.setContentPane(canvas);	
+        return f;	
+	}
+	
+	public void showOptions() {
+		String text = "Click the Dice to roll it!\n"
+				+ 	  "-------------------------------\n"
+				+	  "Move using WASD";				
+		JOptionPane.showMessageDialog(gameScreen, text);	
+	}
+	
+	
 	public static void main(String[] args) {       
         new MainMenuController();      
     }
-	
-	
-
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -43,5 +44,13 @@ public class MainMenuView extends JFrame{
         contentPane.add(confirmButton);
         
         return contentPane;
+	}
+
+	public void wrongNumDialog() {
+		JOptionPane.showMessageDialog(f, "INVALID PLAYER NUMBER!");	
+	}
+
+	public void badInputDialog() {
+		JOptionPane.showMessageDialog(f, "INVALID INPUT!\n Enter a number between 3-6");		
 	}
 }
