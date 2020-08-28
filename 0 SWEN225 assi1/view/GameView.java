@@ -1,17 +1,14 @@
 package view;
 
-import java.awt.Dimension;
-import java.awt.List;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 import controller.GameController;
 import controller.MainMenuController;
@@ -31,20 +28,67 @@ public class GameView {
 	JFrame mainMenu;
 
 	BoardView boardView;
+	List<PlayerView> players;
 	//GameController gc;
 
-	public GameView(BoardView aBoardView) {
+	public GameView(BoardView aBoardView, List<PlayerView> players) {
 		this.boardView = aBoardView;
+		this.players = players;
 		this.gameScreen = createGameFrame();
 		this.gameScreen.setVisible(true);
 	}
 
 	private JFrame createGameFrame() {
 		JFrame f = new JFrame("Game");
-		f.setSize(new Dimension(800, 800));
+		f.setSize(new Dimension(900, 900));
 		f.setJMenuBar(createMenu());
+		f.setLayout(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		//draw board
+		constraints.gridheight = 1;
+		constraints.gridwidth = 1;
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.ipadx = 700;
+		constraints.ipady = 700;
+		f.add(boardView, constraints);
 
-		f.add(boardView);
+		//draw roll dice panel
+		constraints.gridx=  0;
+		constraints.gridy = 2;
+		constraints.ipady = 80;
+		//add JPanel for dice
+		JPanel rollDice = new JPanel();
+		rollDice.setLayout(new BoxLayout(rollDice, BoxLayout.X_AXIS));
+		//add components
+		//dice pictures
+		JLabel firstDice = new JLabel();
+		JLabel secondDice =  new JLabel();
+		//get dice image
+		BufferedImage dicePictureBuffer;
+		Image dicePicture;
+		try {
+			dicePictureBuffer = ImageIO.read(new File("DiceFaces//Dice_1.png"));
+			dicePicture = dicePictureBuffer.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		} catch (IOException e) {
+			System.out.println("dice picture not found!");
+			return null;
+		}
+		firstDice.setIcon(new ImageIcon(dicePicture));
+		secondDice.setIcon(new ImageIcon(dicePicture));
+		JButton rollButton = new JButton("Roll Dice");
+		rollDice.add(firstDice);
+		rollDice.add(secondDice);
+		rollDice.add(rollButton);
+		f.add(rollDice, constraints);
+
+		//draw player's cards
+		constraints.gridx = 2;
+		constraints.gridy = 0;
+		constraints.ipadx = 100;
+		constraints.ipady = 800;
+		PlayerView playerHand = players.get(0);
+		f.add(playerHand);
 
 		return f;
 	}
@@ -128,6 +172,10 @@ public class GameView {
 				+ "-------------------------------\n"
 				+ "Move using WASD";
 		JOptionPane.showMessageDialog(gameScreen, text);
+	}
+
+	public void addPlayerView(PlayerView p) {
+		players.add(p);
 	}
 
 
