@@ -10,11 +10,11 @@ import javax.swing.JTextField;
 import view.MainMenuView;
 
 public class MainMenuController implements ActionListener{
-	
+
 	MainMenuView m;
 	Component[] componentList;
 	public MainMenuController(){
-		this.m = new MainMenuView();		
+		this.m = new MainMenuView();
 		this.componentList = m.getContentPane().getComponents();
 		JButton j = (JButton) componentList[3];
 		j.addActionListener(this);
@@ -22,28 +22,28 @@ public class MainMenuController implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//when the button is pressed set the number of players and start the game 
-		JTextField textField = (JTextField) componentList[2];		
+		//when the button is pressed set the number of players and start the game
+		JTextField textField = (JTextField) componentList[2];
 		if(textField.getText() == null || !isNum(textField.getText())) {
-			m.badInputDialog();			
+			m.badInputDialog();
 			textField.setText("");
 		}
 		else {
 			int i = Integer.parseInt(textField.getText());
 			if(i < 3 || i > 6) {
-				m.wrongNumDialog();				
+				m.wrongNumDialog();
 				textField.setText("");
 			}
 			else {
 				new GameController(i);	//If everything is ok with the input, create game controller
 				m.setVisible(false);//make this frame not visible
-				
+
 			}
-		}											
+		}
 	}
-	
+
 	@SuppressWarnings("unused")
-	private boolean isNum(String text) {	
+	private boolean isNum(String text) {
 		int numPlayers = 0;
 		try {
 			numPlayers = Integer.parseInt(text);
@@ -52,5 +52,5 @@ public class MainMenuController implements ActionListener{
 			return false;
 		}
 		return true;
-	}			
+	}
 }
