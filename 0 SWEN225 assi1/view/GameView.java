@@ -29,13 +29,14 @@ public class GameView {
 
 	BoardView boardView;
 	List<PlayerView> players;
-	//GameController gc;
+	GameController gc;
 
-	public GameView(BoardView aBoardView, List<PlayerView> players) {
+	public GameView(BoardView aBoardView, List<PlayerView> players,GameController gc) {
 		this.boardView = aBoardView;
 		this.players = players;
 		this.gameScreen = createGameFrame();
 		this.gameScreen.setVisible(true);
+		this.gc = gc;
 	}
 
 	private JFrame createGameFrame() {
@@ -130,8 +131,8 @@ public class GameView {
 		JFrame f = new JFrame("Suggestions");
 		f.setSize(new Dimension(800, 800));
 		JPanel canvas = new JPanel(null);
-		ArrayList<CardView> characterCards;// = gc.getCharCards();
-		ArrayList<CardView> weaponCards;// = gc.getWeaponCards();
+		ArrayList<CardView> characterCards = gc.getCharCards();
+		ArrayList<CardView> weaponCards = gc.getWeaponCards();
 		//Create GUI components - TITLE
 		JLabel label = new JLabel("Time To make a suggestion!");
 		label.setFont(label.getFont().deriveFont(25.0f));
@@ -139,23 +140,30 @@ public class GameView {
 		JLabel textLabel = new JLabel("Select a character:");
 		textLabel.setBounds(10, 60, 200, 50);
 		// character cards
-        /*int x = 10;
+		ButtonGroup charButGroup = new ButtonGroup();
+        int x = 10;
         for(CardView cv: characterCards) {
+        	System.out.println("IN THE LOOP"); //not entering loop maybe there are no cards?
         	cv.setBounds(x,70,100,200);
-        	canvas.add(cv);
-        	add a radio button with the cv's name underneath each card
+        	JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,275,100,50);
+        	canvas.add(jBut);        	
+        	canvas.add(cv);   
+        	charButGroup.add(jBut);
         	x+=110;
-        }*/
+        }
 		JLabel textLabel2 = new JLabel("Select a weapon:");
 		textLabel2.setBounds(10, 400, 200, 50);
 		// weapon cards
-        /*x = 10;
+		ButtonGroup weapButGroup = new ButtonGroup();
+        x = 10;
         for(CardView cv: weaponCards) {
         	cv.setBounds(x,410,100,200);
+        	JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,615,100,50);
+        	canvas.add(jBut);       	
         	canvas.add(cv);
-        	add a radio button with the cv's name underneath each card
+        	weapButGroup.add(jBut);
         	x+=110;
-        }*/
+        }
 		JButton confirmButton = new JButton("confirm");    //Button
 		confirmButton.setBounds(325, 700, 150, 50);
 		//Add components to the content pane

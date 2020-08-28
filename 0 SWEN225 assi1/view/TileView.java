@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TileView extends JLayeredPane {
-    //attributes
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8666965276708185159L;
+	//attributes
     private ImageIcon tilePicture;
     //text that appears when mouse hovers above it
     private String tileToolTipText;

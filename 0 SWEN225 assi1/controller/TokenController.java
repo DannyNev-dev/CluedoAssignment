@@ -1,7 +1,6 @@
 package controller;
 
 import model.Token;
-import view.TileView;
 import view.TokenView;
 
 import javax.imageio.ImageIO;

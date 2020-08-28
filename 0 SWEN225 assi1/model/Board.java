@@ -2,7 +2,6 @@ package model;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collector;
 
 /**
  * Represents a board of tiles for the game

@@ -8,9 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-
-import model.Card;
-import model.Player;
 import view.CardView;
 import view.GameView;
 import model.Game;
@@ -26,17 +23,15 @@ public class GameController {
 
 	PlayerView currentPlayer;
 
-	ArrayList<CardView> weaponCards;
-	ArrayList<CardView> characterCards;
-	ArrayList<CardView> roomCards;
-
+	@SuppressWarnings("static-access")
 	public GameController(int playerNumber) {
 		try {
 			gm = new Game(playerNumber);
 		} catch(IOException e) {
 			System.out.println("ERROR: MAP FILE NOT FOUND");
 		}
-
+		
+		cards = new ArrayList<CardController>();
 		initializeCards(); //not implemented, need to make sure model game is initialized prior to view related calls
 
 		List<PlayerView> players = new ArrayList<PlayerView>();
@@ -50,11 +45,11 @@ public class GameController {
 
 		//add boardController and BoardView to game
 		boardController = new BoardController(gm.getBoard());
-		this.gv = new GameView(boardController.view, players);
+		this.gv = new GameView(boardController.view, players,this);
 
 		addMenuActionListeners();
-		//JFrame j = gv.suggestionView(); 		//for testing the suggestion screen
-		//j.setVisible(true);
+		JFrame j = gv.suggestionView(); 		//for testing the suggestion screen
+		j.setVisible(true);
 	}
 
 	private void addMenuActionListeners() {
@@ -100,20 +95,30 @@ public class GameController {
 		//go through each card in game and create card controller
 		for(int i = 0; i < gm.getCards().size(); i++) {
 			cards.add(new CardController(gm.getCard(i)));
-
 		}
 	}
-
 	//get all the char cards as components
 	public ArrayList<CardView> getCharCards() {
-		return this.characterCards;
-	}
+		ArrayList<CardView> cv = new ArrayList<CardView>();
+		for(CardController cc : cards) {
+			String name = cc.model.toString();
+			if(name=="Miss Scarlet"||name=="Colonel Mustard"||name=="Mrs White"||name=="Mr Green"||name=="Mrs Peacock"||name=="Professor Plum"){
+				cv.add(cc.getView());
+			}
+		}
+		return cv;
+	}							
 	public ArrayList<CardView> getWeaponCards() {
-		// TODO Auto-generated method stub
-		return this.weaponCards;
+		ArrayList<CardView> cv = new ArrayList<CardView>();
+		for(CardController cc : cards) {
+			String name = cc.model.toString();
+			if(name=="candlestick"||name=="dagger"||name=="lead pipe"||name=="spanner"||name=="billiard room"||name=="dining room"){
+				cv.add(cc.getView());
+			}
+		}
+		return cv;			
 	}
 	public ArrayList<CardView> getRoomCards(){
-		return this.roomCards;
+		return null;
 	}
-
 }

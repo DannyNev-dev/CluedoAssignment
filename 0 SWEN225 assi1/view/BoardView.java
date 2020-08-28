@@ -10,7 +10,11 @@ import java.awt.*;
  */
 public class BoardView extends JPanel {
 
-    TileView[][] tiles;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7422285909447233127L;
+	TileView[][] tiles;
 
     public BoardView() {
         tiles = new TileView[25][24];

@@ -3,7 +3,6 @@ import java.awt.Point;
 import java.io.*;
 import java.util.*;
 
-import static java.lang.Integer.parseInt;
 
 /**
  * Main class, represents a game
@@ -157,6 +156,7 @@ public class Game
 		//read board map text file and create board from data
 		String[] data = new String[Board.HEIGHT];
 		try {
+			@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			//go through all lines of file and add it to string
 			String str = "";  //line read from file
@@ -424,6 +424,7 @@ public class Game
 	// INTERFACE
 	//------------------------
 
+	@SuppressWarnings("unlikely-arg-type")
 	public boolean removeAccusation(String aAccusation)
 	{
 		boolean wasRemoved = false;
@@ -481,6 +482,7 @@ public class Game
 
 	public int indexOfAccusation(String aAccusation)
 	{
+		@SuppressWarnings("unlikely-arg-type")
 		int index = accusations.indexOf(aAccusation);
 		return index;
 	}

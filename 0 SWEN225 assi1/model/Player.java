@@ -51,12 +51,13 @@ public class Player extends Token
 	 */
 	public Card[] makeSuggestion(Board board, Game game){
 		//let player choose one character card and one weapon card via strings
-		Player characterSelected = null;
+		//Player characterSelected = null;
 		String characterName = "";
 		String weaponName = "";
 		String roomName = "";
-		Weapon weaponSelected = null;
+		//Weapon weaponSelected = null;
 		boolean selectedValid = false;  //checking is typed in character is valid
+		@SuppressWarnings("resource")
 		Scanner s = new Scanner(System.in);
 
 		//select character

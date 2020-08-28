@@ -12,7 +12,11 @@ import java.util.List;
  */
 public class PlayerView extends JPanel {
 
-    List<CardView> cards;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1280946548453444722L;
+	List<CardView> cards;
 
     public PlayerView(Player player){
         super();

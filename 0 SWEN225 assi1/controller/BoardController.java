@@ -10,14 +10,15 @@ public class BoardController {
 
     TileController tiles[][];
 
-    BoardController(Board aModel) {
+    @SuppressWarnings("static-access")
+	BoardController(Board aModel) {
         model = aModel;
         view = new BoardView();
 
         tiles = new TileController[model.HEIGHT][model.WIDTH];
 
         //add the tiles' and tokens' data into boardView and tileControllers
-        int tokenCounter = 0;
+        //int tokenCounter = 0;
         for(int i = 0; i < model.HEIGHT; i++) {
             for (int j = 0; j < model.WIDTH; j++) {
                 //adding tile data
