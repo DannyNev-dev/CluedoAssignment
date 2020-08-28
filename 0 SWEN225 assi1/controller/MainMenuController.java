@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import view.MainMenuView;
@@ -26,13 +25,13 @@ public class MainMenuController implements ActionListener{
 		//when the button is pressed set the number of players and start the game 
 		JTextField textField = (JTextField) componentList[2];		
 		if(textField.getText() == null || !isNum(textField.getText())) {
-			JOptionPane.showMessageDialog(m, "INVALID INPUT!\n Enter a number between 3-6");
+			m.badInputDialog();			
 			textField.setText("");
 		}
 		else {
 			int i = Integer.parseInt(textField.getText());
 			if(i < 3 || i > 6) {
-				JOptionPane.showMessageDialog(m, "INVALID PLAYER NUMBER!");
+				m.wrongNumDialog();				
 				textField.setText("");
 			}
 			else {
@@ -53,7 +52,5 @@ public class MainMenuController implements ActionListener{
 			return false;
 		}
 		return true;
-	}
-	
-		
+	}			
 }
