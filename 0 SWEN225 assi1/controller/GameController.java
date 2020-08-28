@@ -2,15 +2,19 @@ package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import model.Card;
+import model.Player;
 import view.CardView;
 import view.GameView;
 import model.Game;
+import view.PlayerView;
 
 public class GameController {
 	//create model and view for the game, handle inputs and communication relating to the game
@@ -18,6 +22,9 @@ public class GameController {
 	Game gm;	//Model component of game
 
 	BoardController boardController;	//board of the game
+	ArrayList<CardController> cards;	//cards in the game
+
+	PlayerView currentPlayer;
 
 	ArrayList<CardView> weaponCards;
 	ArrayList<CardView> characterCards;
@@ -29,16 +36,25 @@ public class GameController {
 		} catch(IOException e) {
 			System.out.println("ERROR: MAP FILE NOT FOUND");
 		}
-		//add boardController and BoardView to game
-		boardController = new BoardController(gm.getBoard());
-		this.gv = new GameView(boardController.view);
 
-		addMenuActionListeners();
 		initializeCards(); //not implemented, need to make sure model game is initialized prior to view related calls
 
+		List<PlayerView> players = new ArrayList<PlayerView>();
+
+		//create players
+		for(int i = 0; i < gm.PLAYERS.length; i++) {
+			if(gm.PLAYERS[i].getIsActive()) {	//check if active player
+				players.add(new PlayerView(gm.PLAYERS[i]));
+			}
+		}
+
+		//add boardController and BoardView to game
+		boardController = new BoardController(gm.getBoard());
+		this.gv = new GameView(boardController.view, players);
+
+		addMenuActionListeners();
 		//JFrame j = gv.suggestionView(); 		//for testing the suggestion screen
 		//j.setVisible(true);
-		//start game
 	}
 
 	private void addMenuActionListeners() {
@@ -81,6 +97,11 @@ public class GameController {
 	//takes data of the cards from the model and creates 3 decks of card view objects that represent each card
 	private void initializeCards() {
 		//ask game for lists of cards, create view cards passing in the name of each card, add these cards to the local card lists
+		//go through each card in game and create card controller
+		for(int i = 0; i < gm.getCards().size(); i++) {
+			cards.add(new CardController(gm.getCard(i)));
+
+		}
 	}
 
 	//get all the char cards as components
