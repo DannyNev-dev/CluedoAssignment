@@ -60,10 +60,13 @@ public class GameController {
 
 		gv.getRollDiceButton().addActionListener(e -> {rollDice();});		//add roll Dice button listener
 
+		gv.suggestionView();	//create suggestion screen for later
+		//add the listeners
+		gv.getMakeSuggestionScreen();
+		gv.accusationInquiryView();	//create accusation inquiry screen for later
+
 		//start game
 		System.out.println("start game");
-		//JFrame j = gv.suggestionView(); 		//for testing the suggestion screen
-		//j.setVisible(true);
 	}
 
 	private void rollDice() {
@@ -80,6 +83,8 @@ public class GameController {
 			currentlyMoving = true;	//change state of game
 		}
 	}
+
+
 
 	/**
 	 * key listeners for the game screen
@@ -130,11 +135,9 @@ public class GameController {
 						currentlyMoving = false;	//exit moving state
 						if(gm.checkIfRoom(currentPlayer.getModel())) {//check if in room
 							//if so change to suggestion state
-							JFrame j = gv.suggestionView();
-							j.setVisible(true);
+							gv.getMakeSuggestionScreen().setVisible(true);
 						} else {	//if not got the accusation inquiry state
-							JFrame j = gv.accusationInquiryView();
-							j.setVisible(true);
+							gv.getAccusationInquiryScreen().setVisible(true);
 						}
 					}
 				}
