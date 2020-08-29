@@ -27,9 +27,12 @@ public class GameView {
 
 	JFrame gameScreen;
 	JFrame mainMenu;
-	JButton rollDiceButton = new JButton("Roll Dice");
+	JFrame makeSuggestionScreen;
+	JFrame accusationInquiryScreen;
 
-	//components
+
+	//components for the game screen
+	JButton rollDiceButton = new JButton("Roll Dice");
 	List<ImageIcon> diceImages;
 	JLabel firstDice;
 	JLabel secondDice;
@@ -136,10 +139,10 @@ public class GameView {
 		return this.mainMenu;
 	}
 
-	public JFrame suggestionView() {
-		JFrame f = new JFrame("Suggestions");
-		f.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
-		f.setSize(new Dimension(800, 800));
+	public void suggestionView() {
+		makeSuggestionScreen = new JFrame("Suggestions");
+		makeSuggestionScreen.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
+		makeSuggestionScreen.setSize(new Dimension(800, 800));
 		JPanel canvas = new JPanel(null);
 		ArrayList<CardView> characterCards = gc.getCharCards();
 		ArrayList<CardView> weaponCards = gc.getWeaponCards();
@@ -180,14 +183,13 @@ public class GameView {
 		canvas.add(textLabel);
 		canvas.add(textLabel2);
 		canvas.add(confirmButton);
-		f.setContentPane(canvas);
-		return f;
+		makeSuggestionScreen.setContentPane(canvas);
 	}
 
-	public JFrame accusationInquiryView() {
-		JFrame f = new JFrame("Want To Choose An Accusation?");
-		f.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
-		f.setSize(new Dimension(800, 400));
+	public void accusationInquiryView() {
+		accusationInquiryScreen = new JFrame("Want To Choose An Accusation?");
+		accusationInquiryScreen.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
+		accusationInquiryScreen.setSize(new Dimension(800, 400));
 		JPanel canvas = new JPanel(null);
 		//add question title
 		JLabel label = new JLabel("Do you want to make an accusation?");
@@ -203,8 +205,7 @@ public class GameView {
 		canvas.add(yesButton);
 		canvas.add(noButton);
 
-		f.setContentPane(canvas);
-		return f;
+		accusationInquiryScreen.setContentPane(canvas);
 	}
 
 	public void showOptions() {
@@ -217,6 +218,9 @@ public class GameView {
 	/**public void addPlayerView(PlayerView p) {
 		players.add(p);
 	}**/
+
+	public JFrame getMakeSuggestionScreen() { return  makeSuggestionScreen; }
+	public JFrame getAccusationInquiryScreen() { return accusationInquiryScreen; }
 
 	public JButton getRollDiceButton() {
 		return rollDiceButton;
