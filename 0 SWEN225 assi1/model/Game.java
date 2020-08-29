@@ -1,4 +1,6 @@
 package model;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import java.awt.Point;
 import java.io.*;
 import java.util.*;
@@ -16,6 +18,8 @@ public class Game
 	//Game Attributes
 
 	private Board board;
+
+	private List<Card> cardsForViewer = new ArrayList<>();
 	//private List<Tile> tiles;
 	private Stack<Card> cards;
 	private List<Card> envelope;  //order of solution is character, weapon then room
@@ -204,7 +208,8 @@ public class Game
 			System.out.println("Current player is: "+p.getSymbol());
 			System.out.println("Your hand: "+p.getHand());
 
-			int numMoves = rollDice();  //roll dice
+			int[] values = rollDice();  //roll dice and get two values
+			int numMoves = values[0]+values[1];
 			// list of player moves in a turn
 			List<Point> moveLog = new ArrayList<>();
 
@@ -309,8 +314,8 @@ public class Game
 				|| board.getGrid()[newPos.y][newPos.x].getUnderlyingSymbol() == '.') {
 			if(checkingMainMove) {
 				System.out.println("Invalid move! Goes out of bounds");
-				board.printBoard();
-				System.out.println();
+				//board.printBoard();
+				//System.out.println();
 			}
 			return false;
 		}
@@ -320,8 +325,8 @@ public class Game
 			if(!(board.getGrid()[oldPos.y][oldPos.x] instanceof DoorTile) && !(board.getGrid()[oldPos.y][oldPos.x] instanceof RoomTile)) {//check if not coming from a door tile
 				if(checkingMainMove) {
 					System.out.println("Invalid move! Goes into a room without first going through a door");   //if not, then it is invalid move
-					board.printBoard();
-					System.out.println();
+					//board.printBoard();
+					//System.out.println();
 				}
 				return false;
 			}
@@ -332,8 +337,8 @@ public class Game
 			if(!(board.getGrid()[newPos.y][newPos.x] instanceof DoorTile) && !(board.getGrid()[newPos.y][newPos.x] instanceof RoomTile)) {//check if not coming from a door tile
 				if(checkingMainMove) {
 					System.out.println("Invalid move! Goes out of a room without first going through a door");   //if not, then it is invalid move
-					board.printBoard();
-					System.out.println();
+					//board.printBoard();
+					//System.out.println();
 				}
 				return false;
 			}
@@ -412,12 +417,21 @@ public class Game
 			moveLog.add(new Point(currentCol+x, currentRow+y));
 
 			// print updated board
-			board.printBoard();
-			System.out.println();
+			//board.printBoard();
+			//System.out.println();
 
 			return 0;    //was valid so return true
 		}else {System.out.println("ERROR: Invalid move");}
 		return 1;
+	}
+
+	/**
+	 * Checks if player p is in a room
+	 * @param p
+	 * @return
+	 */
+	public boolean checkIfRoom(Player p) {
+		return board.getGrid()[p.getLocation().x][p.getLocation().y] instanceof RoomTile && p.getCanWin();
 	}
 
 	//------------------------
@@ -554,21 +568,33 @@ public class Game
 	public void initDeck(){
 		//create character cards
 		Stack<Card> charCards = new Stack<>();
+		cardsForViewer.add(new Card("Miss Scarlet"));
 		charCards.push(new Card("Miss Scarlet"));
+		cardsForViewer.add(new Card("Colonel Mustard"));
 		charCards.push(new Card("Colonel Mustard"));
+		cardsForViewer.add(new Card("Mrs White"));
 		charCards.push(new Card("Mrs White"));
+		cardsForViewer.add(new Card("Mr Green"));
 		charCards.push(new Card("Mr Green"));
+		cardsForViewer.add(new Card("Mrs Peacock"));
 		charCards.push(new Card("Mrs Peacock"));
+		cardsForViewer.add(new Card("Professor Plum"));
 		charCards.push(new Card("Professor Plum"));
 		Collections.shuffle(charCards);
 
 		//create weapon cards
 		Stack<Card> weaponCards = new Stack<>();
+		cardsForViewer.add(new Card("candlestick"));
 		weaponCards.push(new Card("candlestick"));
+		cardsForViewer.add(new Card("dagger"));
 		weaponCards.push(new Card("dagger"));
+		cardsForViewer.add(new Card("lead pipe"));
 		weaponCards.push(new Card("lead pipe"));
+		cardsForViewer.add(new Card("revolver"));
 		weaponCards.push(new Card("revolver"));
+		cardsForViewer.add(new Card("rope"));
 		weaponCards.push(new Card("rope"));
+		cardsForViewer.add(new Card("spanner"));
 		weaponCards.push(new Card("spanner"));
 		Collections.shuffle(weaponCards);
 
@@ -653,13 +679,20 @@ public class Game
 		//location is not actually changed on the board
 	}
 
+	public List<Card> getCardsForViewer() {
+		return cardsForViewer;
+	}
+
 
 	/**
 	 * generates a random number equivalent to a 2 dice roll
 	 * @return
 	 */
-	public int rollDice(){
-		int randomNum = (int)((Math.random() * (12-2)) + 2);
-		return randomNum;
+	public int[] rollDice(){
+		int[] number = new int[2];
+		number[0] = (int)((Math.random() * (6)) + 1);
+		System.out.println();
+		number[1] = (int)((Math.random() * (6)) + 1);
+		return number;
 	}
 }

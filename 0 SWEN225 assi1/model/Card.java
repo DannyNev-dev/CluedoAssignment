@@ -24,7 +24,7 @@ public class Card
 	//------------------------
 
 	/**
-	 * returns card's file name
+	 * returns card's picture's file name
 	 * @return
 	 */
 	public String getName()
@@ -48,14 +48,12 @@ public class Card
 				return "knife";
 			case "lead pipe":
 				return "pipe";
-			case "spanner":
-				return "rope";
 			case "billiard room":
 				return "billiard";
 			case "dining room":
 				return "dining";
 		}
-		return name;
+		return name;	//if don't need to change name to get file name
 	}
 
 	public void delete()
