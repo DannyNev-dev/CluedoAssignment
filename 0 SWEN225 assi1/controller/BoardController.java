@@ -27,4 +27,19 @@ public class BoardController {
             }
         }
     }
+
+    /**
+     * Updates the viewer of the board based on the current state of the model
+     */
+    public void update() {
+        //add the tiles' and tokens' data into boardView and tileControllers
+       view.clear();    //clear old board
+        for(int i = 0; i < model.HEIGHT; i++) { //redraw board
+            for (int j = 0; j < model.WIDTH; j++) {
+                //adding tile data
+                tiles[i][j] = new TileController(model.getTileAt(j, i));
+                view.addTile(i, j, tiles[i][j].getTileView());
+            }
+        }
+    }
 }

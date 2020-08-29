@@ -1,13 +1,14 @@
 package controller;
 
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.*;
+
 import view.CardView;
 import view.GameView;
 import model.Game;
@@ -21,7 +22,12 @@ public class GameController {
 	BoardController boardController;	//board of the game
 	ArrayList<CardController> cards;	//cards in the game
 
+	boolean currentlyMoving = false;
+
 	PlayerView currentPlayer;
+	int movesLeft = -1;	//moves left for current player
+	List<Point> moveLog = new ArrayList<>();
+
 
 	@SuppressWarnings("static-access")
 	public GameController(int playerNumber) {
@@ -43,13 +49,101 @@ public class GameController {
 			}
 		}
 
+		currentPlayer = players.get(0);	//get first player
+
 		//add boardController and BoardView to game
 		boardController = new BoardController(gm.getBoard());
-		this.gv = new GameView(boardController.view, players,this);
+		this.gv = new GameView(boardController.view, currentPlayer, this);
 
 		addMenuActionListeners();
-		JFrame j = gv.suggestionView(); 		//for testing the suggestion screen
-		j.setVisible(true);
+		addKeyListeners();
+
+		gv.getRollDiceButton().addActionListener(e -> {rollDice();});		//add roll Dice button listener
+
+		//start game
+		System.out.println("start game");
+		//JFrame j = gv.suggestionView(); 		//for testing the suggestion screen
+		//j.setVisible(true);
+	}
+
+	private void rollDice() {
+		int[] diceNumbers = gm.rollDice();
+		gv.animateDice(diceNumbers);
+		gameTurn(diceNumbers); //now go to moving state
+	}
+
+	private void gameTurn(int[] diceNumbers) {
+		if(currentPlayer.getModel().getCanWin()) {	//if player can win then they can do a turn
+			gv.getRollDiceButton().setEnabled(false);	//disable rollDice button
+			movesLeft = diceNumbers[0]+diceNumbers[1];	//get number of moves
+			System.out.println("movesLeft = "+movesLeft);
+			currentlyMoving = true;	//change state of game
+		}
+	}
+
+	/**
+	 * key listeners for the game screen
+	 */
+	private void addKeyListeners() {
+		//add keyListener
+		gv.getGameScreen().setFocusable(true);
+		gv.getGameScreen().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override	//checking for WASD
+			public void keyPressed(KeyEvent e) {
+				boolean doMove = true;
+				char charPressed = ' ';
+				switch(e.getKeyCode()) {
+					case KeyEvent.VK_W:	//up
+						charPressed = 'w';
+						break;
+					case KeyEvent.VK_A:	//left
+						charPressed = 'a';
+						break;
+					case KeyEvent.VK_S:
+						charPressed = 's';
+						break;
+					case KeyEvent.VK_D:
+						charPressed = 'd';
+						break;
+					default:
+						doMove = false;
+						System.out.println("Invalid move");
+				}
+				if(doMove && (currentlyMoving)) {
+					System.out.println("movesLeft = "+movesLeft);
+					int y = currentPlayer.getY();
+					int x =  currentPlayer.getX();
+					gm.move(currentPlayer.getModel(), charPressed, moveLog);
+					boardController.update();	//get the updated view of the board based from the model
+					movesLeft--;
+					//repaint board
+					gv.getBoardView().repaint();
+					gv.getBoardView().revalidate();
+
+					//check if ran out of moves
+					if(movesLeft == 0) {
+						System.out.println("ran out of moves");
+						currentlyMoving = false;	//exit moving state
+						if(gm.checkIfRoom(currentPlayer.getModel())) {//check if in room
+							//if so change to suggestion state
+							JFrame j = gv.suggestionView();
+							j.setVisible(true);
+						} else {	//if not got the accusation inquiry state
+							JFrame j = gv.accusationInquiryView();
+							j.setVisible(true);
+						}
+					}
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+		});
 	}
 
 	private void addMenuActionListeners() {
@@ -93,13 +187,14 @@ public class GameController {
 	private void initializeCards() {
 		//ask game for lists of cards, create view cards passing in the name of each card, add these cards to the local card lists
 		//go through each card in game and create card controller
-		for(int i = 0; i < gm.getCards().size(); i++) {
-			cards.add(new CardController(gm.getCard(i)));
+		for(int i = 0; i < gm.getCardsForViewer().size(); i++) {
+			cards.add(new CardController(gm.getCardsForViewer().get(i)));
 		}
 	}
 	//get all the char cards as components
 	public ArrayList<CardView> getCharCards() {
 		ArrayList<CardView> cv = new ArrayList<CardView>();
+		System.out.println("cards size in getChar = "+cards.size());
 		for(CardController cc : cards) {
 			String name = cc.model.toString();
 			if(name=="Miss Scarlet"||name=="Colonel Mustard"||name=="Mrs White"||name=="Mr Green"||name=="Mrs Peacock"||name=="Professor Plum"){
@@ -112,7 +207,7 @@ public class GameController {
 		ArrayList<CardView> cv = new ArrayList<CardView>();
 		for(CardController cc : cards) {
 			String name = cc.model.toString();
-			if(name=="candlestick"||name=="dagger"||name=="lead pipe"||name=="spanner"||name=="billiard room"||name=="dining room"){
+			if(name=="candlestick"||name=="dagger"||name=="lead pipe"||name=="spanner"||name=="revolver"||name=="rope"){
 				cv.add(cc.getView());
 			}
 		}
@@ -120,5 +215,9 @@ public class GameController {
 	}
 	public ArrayList<CardView> getRoomCards(){
 		return null;
+	}
+
+	public PlayerView getCurrentPlayer() {
+		return currentPlayer;
 	}
 }
