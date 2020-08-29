@@ -43,11 +43,11 @@ public class TileView extends JLayeredPane {
 
     public void setToken(TokenView token) {
         this.token = token;
-        if(token != null) {
-            token.setBounds(0, 0, 32, 32);
-            add(token, 0);
+        if(this.token != null) {
+            this.token.setBounds(0, 0, 32, 32);
+            add(this.token, 0);
         } else {
-            remove(token);
+            ;
         }
     }
 }

@@ -12,6 +12,7 @@ import javax.swing.*;
 
 import controller.GameController;
 import controller.MainMenuController;
+import model.Player;
 
 /**
  * @author Daniel,Ketaki,Victoria
@@ -26,14 +27,20 @@ public class GameView {
 
 	JFrame gameScreen;
 	JFrame mainMenu;
+	JButton rollDiceButton = new JButton("Roll Dice");
+
+	//components
+	List<ImageIcon> diceImages;
+	JLabel firstDice;
+	JLabel secondDice;
 
 	BoardView boardView;
-	List<PlayerView> players;
+	PlayerView currentPlayer;
 	GameController gc;
 
-	public GameView(BoardView aBoardView, List<PlayerView> players,GameController gc) {
+	public GameView(BoardView aBoardView, PlayerView player,GameController gc) {
 		this.boardView = aBoardView;
-		this.players = players;
+		this.currentPlayer = player;
 		this.gameScreen = createGameFrame();
 		this.gameScreen.setVisible(true);
 		this.gc = gc;
@@ -41,7 +48,7 @@ public class GameView {
 
 	private JFrame createGameFrame() {
 		JFrame f = new JFrame("Game");
-		f.setSize(new Dimension(900, 900));
+		f.setSize(new Dimension(1200, 1200));
 		f.setJMenuBar(createMenu());
 		f.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -56,31 +63,34 @@ public class GameView {
 
 		//draw roll dice panel
 		constraints.gridx=  0;
-		constraints.gridy = 2;
-		constraints.ipady = 80;
+		constraints.gridy = 1;
+		constraints.ipady = 0;
 		//add JPanel for dice
 		JPanel rollDice = new JPanel();
 		rollDice.setLayout(new BoxLayout(rollDice, BoxLayout.X_AXIS));
 		//add components
 		//dice pictures
-		JLabel firstDice = new JLabel();
-		JLabel secondDice =  new JLabel();
+		firstDice = new JLabel();
+		secondDice =  new JLabel();
 		//get dice image
 		BufferedImage dicePictureBuffer;
 		Image dicePicture;
-		try {
-			dicePictureBuffer = ImageIO.read(new File("DiceFaces//Dice_1.png"));
-			dicePicture = dicePictureBuffer.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-		} catch (IOException e) {
-			System.out.println("dice picture not found!");
-			return null;
+		diceImages = new ArrayList<>();
+		for(int i = 1; i < 7; i++) {
+			try {
+				dicePictureBuffer = ImageIO.read(new File("DiceFaces//Dice_"+String.valueOf(i)+".png"));
+				diceImages.add(new ImageIcon(dicePictureBuffer.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+			} catch (IOException e) {
+				System.out.println("dice picture not found!");
+				return null;
+			}
 		}
-		firstDice.setIcon(new ImageIcon(dicePicture));
-		secondDice.setIcon(new ImageIcon(dicePicture));
-		JButton rollButton = new JButton("Roll Dice");
+		//at beginning of game draw first dice image
+		firstDice.setIcon(diceImages.get(0));
+		secondDice.setIcon(diceImages.get(0));
 		rollDice.add(firstDice);
 		rollDice.add(secondDice);
-		rollDice.add(rollButton);
+		rollDice.add(rollDiceButton);
 		f.add(rollDice, constraints);
 
 		//draw player's cards
@@ -88,8 +98,7 @@ public class GameView {
 		constraints.gridy = 0;
 		constraints.ipadx = 100;
 		constraints.ipady = 800;
-		PlayerView playerHand = players.get(0);
-		f.add(playerHand);
+		f.add(currentPlayer);
 
 		return f;
 	}
@@ -129,6 +138,7 @@ public class GameView {
 
 	public JFrame suggestionView() {
 		JFrame f = new JFrame("Suggestions");
+		f.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
 		f.setSize(new Dimension(800, 800));
 		JPanel canvas = new JPanel(null);
 		ArrayList<CardView> characterCards = gc.getCharCards();
@@ -143,7 +153,6 @@ public class GameView {
 		ButtonGroup charButGroup = new ButtonGroup();
         int x = 10;
         for(CardView cv: characterCards) {
-        	System.out.println("IN THE LOOP"); //not entering loop maybe there are no cards?
         	cv.setBounds(x,70,100,200);
         	JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,275,100,50);
         	canvas.add(jBut);        	
@@ -175,6 +184,29 @@ public class GameView {
 		return f;
 	}
 
+	public JFrame accusationInquiryView() {
+		JFrame f = new JFrame("Want To Choose An Accusation?");
+		f.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
+		f.setSize(new Dimension(800, 400));
+		JPanel canvas = new JPanel(null);
+		//add question title
+		JLabel label = new JLabel("Do you want to make an accusation?");
+		label.setFont(label.getFont().deriveFont(25.0f));
+		label.setBounds(150, 10, 600, 50);
+
+		JButton yesButton = new JButton("Yes");
+		yesButton.setBounds(150, 200, 100, 50);
+		JButton noButton = new JButton("No");
+		noButton.setBounds(500, 200, 100, 50);
+
+		canvas.add(label);
+		canvas.add(yesButton);
+		canvas.add(noButton);
+
+		f.setContentPane(canvas);
+		return f;
+	}
+
 	public void showOptions() {
 		String text = "Click the Dice to roll it!\n"
 				+ "-------------------------------\n"
@@ -182,8 +214,23 @@ public class GameView {
 		JOptionPane.showMessageDialog(gameScreen, text);
 	}
 
-	public void addPlayerView(PlayerView p) {
+	/**public void addPlayerView(PlayerView p) {
 		players.add(p);
+	}**/
+
+	public JButton getRollDiceButton() {
+		return rollDiceButton;
+	}
+
+	public BoardView getBoardView() {
+		return boardView;
+	}
+
+	public void animateDice(int[] diceValues) {
+		//to add later small animation for rolling dice
+		//draw final images
+		firstDice.setIcon(diceImages.get(diceValues[0]-1));
+		secondDice.setIcon(diceImages.get(diceValues[1]-1));
 	}
 
 
