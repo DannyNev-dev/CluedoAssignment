@@ -49,112 +49,26 @@ public class Player extends Token
 	 * @param board for getting the weapons and char
 	 * @return
 	 */
-	public Card[] makeSuggestion(Board board, Game game){
+	public Card[] makeSuggestion(Board board, Game game, String charName, String weapName){
 		//let player choose one character card and one weapon card via strings
 		//Player characterSelected = null;
-		String characterName = "";
-		String weaponName = "";
+		String characterName = charName;
+		String weaponName = weapName;
 		String roomName = "";
-		//Weapon weaponSelected = null;
-		boolean selectedValid = false;  //checking is typed in character is valid
-		@SuppressWarnings("resource")
-		Scanner s = new Scanner(System.in);
 
-		//select character
-		char inputChar = '\0';
-		while(!selectedValid) {
-			System.out.println("Select a character: ");
-			System.out.println("Miss Scarlet: s");
-			System.out.println("Colonel Mustard: m");
-			System.out.println("Mrs White: w");
-			System.out.println("Mr Green: g");
-			System.out.println("Mrs Peacock: k");
-			System.out.println("Professor Plum: p");
-			inputChar = s.next().charAt(0);
-			switch(inputChar) {
-			case 's':
-				characterName = "Miss Scarlet";
-				selectedValid = true;
-				break;
-			case 'm':
-				characterName = "Colonel Mustard";
-				selectedValid = true;
-				break;
-			case 'w':
-				characterName = "Mrs White";
-				selectedValid = true;
-				break;
-			case 'g':
-				characterName = "Mr Green";
-				selectedValid = true;
-				break;
-			case 'k':
-				characterName = "Mrs Peacock";
-				selectedValid = true;
-				break;
-			case 'p':
-				characterName = "Professor Plum";
-				selectedValid = true;
-				break;
-			default:
-				System.out.println("first char in string is not a valid character");
-				break;
-			}
-		}
+		//get char to search for char in board
 
 		Card charCard = new Card(characterName);  //create character card
-		Point charLoc = board.searchFor(inputChar); //find character on board, for moving the char
-
-		//select weapon
-		selectedValid = false;  //checking is typed in character is valid
-		inputChar = '\0';
-		while(!selectedValid) {
-			System.out.println("Select a weapon: ");
-			System.out.println("Candlestick: c");
-			System.out.println("Dagger: d");
-			System.out.println("Lead Pipe: l");
-			System.out.println("Revolver: r");
-			System.out.println("Rope: o");
-			System.out.println("Spanner: a");
-			inputChar = s.next().charAt(0);
-			switch (inputChar) {
-			case 'c':
-				weaponName = "candlestick";
-				selectedValid = true;
-				break;
-			case 'd':
-				weaponName = "dagger";
-				selectedValid = true;
-				break;
-			case 'l':
-				weaponName = "lead pipe";
-				selectedValid = true;
-				break;
-			case 'r':
-				weaponName = "revolver";
-				selectedValid = true;
-				break;
-			case 'o':
-				weaponName = "rope";
-				selectedValid = true;
-				break;
-			case 'a':
-				weaponName = "spanner";
-				selectedValid = true;
-				break;
-			default:
-				System.out.println("first char in string is not a valid character");
-				break;
-			}
-		}
+		System.out.println("charCard = "+charCard.getName(false).charAt(0));
+		Point charLoc = board.searchFor(charCard.getName(false).charAt(0)); //find character on board, for moving the char
 
 		Card weaponCard = new Card(weaponName);  //create weapon card
-		Point weaponLoc = board.searchFor(inputChar); //find weapon on board, for moving the weapon
+		Point weaponLoc = board.searchFor(weaponCard.getName(false).charAt(0)); //find weapon on board, for moving the weapon
 
 		//get room suggestion took place in
 		//get symbol of tile from player
-		inputChar = board.getGrid()[(int)this.location.getX()][(int)this.location.getY()].getUnderlyingSymbol();
-		switch (inputChar) {
+		char roomChar = board.getGrid()[(int)this.location.getX()][(int)this.location.getY()].getUnderlyingSymbol();
+		switch (roomChar) {
 		case 'K':
 			roomName = "kitchen";
 			break;
@@ -187,16 +101,17 @@ public class Player extends Token
 		Card roomCard = new Card(roomName); //create room card
 
 		//move character to room that player is in
+		System.out.println("charLoc "+charLoc);
 		//check if character is not in room already
-		if(board.getGrid()[(int)charLoc.getX()][(int)charLoc.getY()].getUnderlyingSymbol() != inputChar) {
-			Point moveTo = board.searchFor(inputChar);  //place character in first available spot
+		if(board.getGrid()[(int)charLoc.getY()][(int)charLoc.getX()].getUnderlyingSymbol() != roomChar) {
+			Point moveTo = board.searchFor(roomChar);  //place character in first available spot
 			game.teleport(board.getGrid()[(int)charLoc.getY()][(int)charLoc.getX()].getToken(), charLoc, moveTo);
 		}
 
-		//move weapon to room that player is in
+		//move weapon to room that player is in33
 		//check if weapon is not in room already
-		if(board.getGrid()[(int)weaponLoc.getY()][(int)weaponLoc.getX()].getUnderlyingSymbol() != inputChar) {
-			Point moveTo = board.searchFor(inputChar);  //place character in first available spot
+		if(board.getGrid()[(int)weaponLoc.getY()][(int)weaponLoc.getX()].getUnderlyingSymbol() != roomChar) {
+			Point moveTo = board.searchFor(roomChar);  //place character in first available spot
 			game.teleport(board.getGrid()[(int)weaponLoc.getY()][(int)weaponLoc.getX()].getToken(), charLoc, moveTo);
 		}
 
@@ -220,7 +135,7 @@ public class Player extends Token
 			Card[] accusation = accusations.get(i);
 			System.out.print("\t");
 			for(Card card : accusation) {  //print out all the parts of the accusation
-				System.out.print(card.getName()+" ");
+				System.out.print(card.getName(true)+" ");
 			}
 			System.out.println("["+i+"]");
 		}
@@ -245,7 +160,7 @@ public class Player extends Token
 			Card[] chosenAccusation = accusations.get(indexChosen);
 			//check is accusation is correct
 			for (int i = 0; i < chosenAccusation.length; i++) {
-				if (!chosenAccusation[i].getName().equals(solution.get(i).getName())) {      //if not
+				if (!chosenAccusation[i].toString().equals(solution.get(i).toString())) {      //if not
 					System.out.println("Accusation was incorrect!");
 					System.out.println("You can now only refute");
 					this.canWin = false;  //now this player cannot win in this game
@@ -257,6 +172,13 @@ public class Player extends Token
 		}
 		System.out.println("No accusations!");
 		return 2;
+	}
+
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if(o == null) return false;
+		if(getClass() != o.getClass()) return false;
+		return character == ((Player)o).character;
 	}
 
 	//------------------------

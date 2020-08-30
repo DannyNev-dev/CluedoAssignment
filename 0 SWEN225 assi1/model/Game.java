@@ -248,18 +248,18 @@ public class Game
 		Card[] suggestion = null;
 		boolean refuted = false;
 		//check if player is in a room, if so, call make suggestion
-		if(board.getGrid()[p.getLocation().x][p.getLocation().y] instanceof RoomTile && p.getCanWin()) {
+		/*if(board.getGrid()[p.getLocation().x][p.getLocation().y] instanceof RoomTile && p.getCanWin()) {
 			System.out.println("Time to make a SUGGESTION!");
-			suggestion = p.makeSuggestion(board, this);	//ask and get suggestion from player
+			//suggestion = p.makeSuggestion(board, this);	//ask and get suggestion from player
 
 			for(Player player : PLAYERS) {
 				if(player.getIsActive() && player!=p) {
 					//check and print any refutations
 					for (Card c : player.getHand()) {  
 						for(int i = 0; i < suggestion.length; i++) {
-							if(c.getName().equals(suggestion[i].getName())) {
+							if(c.toString().equals(suggestion[i].toString())) {
 								System.out.println("Refute card found! by Player: " + p.getCharacter());
-								System.out.println(c.getName() + " from " + player.getSymbol() + " hand");
+								System.out.println(c + " from " + player.getSymbol() + " hand");
 								refuted=true;
 								break;
 							}
@@ -268,7 +268,7 @@ public class Game
 				}
 			}
 			if(refuted==false) {accusations.add(suggestion);System.out.println("No refute card found, Suggestion noted");}
-		}
+		}*/
 
 		//asks the player if he would like to make an accusation
 		if(p.getCanWin()) {
@@ -301,6 +301,30 @@ public class Game
 				else {System.out.println("INCORRECT INPUT!");continue;}
 			} 
 		}                 
+	}
+
+	/**
+	 * checks other player's cards and returns refute card found
+	 * @param suggestion
+	 * @param p	current player
+	 * @return
+	 */
+	public Card refuteSuggestion(Card[] suggestion, Player p) {
+		for(Player player : PLAYERS) {
+			if(player.getIsActive() && !player.equals(p)) {
+				//check and print any refutations
+				for (Card c : player.getHand()) {
+					for(int i = 0; i < suggestion.length; i++) {
+						if(c.toString().equals(suggestion[i].toString())) {
+							//System.out.println("Refute card found! by Player: " + player.getCharacter());
+							//System.out.println(c + " from " + player.getSymbol() + "'s hand");
+							return c;
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	// checks if players next move is a valid move
@@ -476,10 +500,10 @@ public class Game
 		return index;
 	}
 
-	public String[] getAccusations()
+	public List<Card[]> getAccusations()
 	{
-		String[] newAccusations = accusations.toArray(new String[accusations.size()]);
-		return newAccusations;
+		//String[] newAccusations = accusations.toArray(new String[accusations.size()]);
+		return accusations;
 	}
 
 	public int numberOfAccusations()
