@@ -1,6 +1,8 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import controller.CardController;
 import controller.GameController;
 import controller.MainMenuController;
 import model.Player;
@@ -25,11 +28,13 @@ import model.Player;
  */
 public class GameView {
 
+	//screens for the game
 	JFrame gameScreen;
 	JFrame mainMenu;
 	JFrame makeSuggestionScreen;
 	JFrame accusationInquiryScreen;
-
+	JFrame refuteCardFoundScreen;
+	JFrame noRefuteCardFoundScreen;
 
 	//components for the game screen
 	JButton rollDiceButton = new JButton("Roll Dice");
@@ -37,8 +42,20 @@ public class GameView {
 	JLabel firstDice;
 	JLabel secondDice;
 
-	BoardView boardView;
-	PlayerView currentPlayer;
+	//components for the make suggestion screen
+	ButtonGroup charButGroup;
+	ButtonGroup weapButGroup;
+	JButton suggestConfirmButton;
+
+	//components for the no refute card found screen
+	JButton noRefuteBackButton;
+
+	//components for the refute card found screen
+	JLabel refuteCard;
+	JButton refuteBackButton;
+
+	BoardView boardView;	//for displaying the board
+	PlayerView currentPlayer;	//for displaying current player's hand
 	GameController gc;
 
 	public GameView(BoardView aBoardView, PlayerView player,GameController gc) {
@@ -139,13 +156,17 @@ public class GameView {
 		return this.mainMenu;
 	}
 
+	/**
+	 * create suggestion view screen which is for making suggestions
+	 */
 	public void suggestionView() {
 		makeSuggestionScreen = new JFrame("Suggestions");
 		makeSuggestionScreen.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
 		makeSuggestionScreen.setSize(new Dimension(800, 800));
 		JPanel canvas = new JPanel(null);
-		ArrayList<CardView> characterCards = gc.getCharCards();
-		ArrayList<CardView> weaponCards = gc.getWeaponCards();
+		ArrayList<CardController> characterCards = gc.getCharCards();
+		ArrayList<CardController> weaponCards = gc.getWeaponCards();
+
 		//Create GUI components - TITLE
 		JLabel label = new JLabel("Time To make a suggestion!");
 		label.setFont(label.getFont().deriveFont(25.0f));
@@ -153,39 +174,46 @@ public class GameView {
 		JLabel textLabel = new JLabel("Select a character:");
 		textLabel.setBounds(10, 60, 200, 50);
 		// character cards
-		ButtonGroup charButGroup = new ButtonGroup();
+		charButGroup = new ButtonGroup();
         int x = 10;
-        for(CardView cv: characterCards) {
+        for(int i = 0; i < characterCards.size(); i++) {
+        	CardView cv = characterCards.get(i).getView();
         	cv.setBounds(x,70,100,200);
         	JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,275,100,50);
+        	jBut.setActionCommand(characterCards.get(i).getModel().toString());
         	canvas.add(jBut);        	
-        	canvas.add(cv);   
+        	canvas.add(cv);
         	charButGroup.add(jBut);
         	x+=110;
         }
 		JLabel textLabel2 = new JLabel("Select a weapon:");
 		textLabel2.setBounds(10, 400, 200, 50);
 		// weapon cards
-		ButtonGroup weapButGroup = new ButtonGroup();
+		weapButGroup = new ButtonGroup();
         x = 10;
-        for(CardView cv: weaponCards) {
+        for(int i = 0; i < weaponCards.size(); i++) {
+        	CardView cv = weaponCards.get(i).getView();
         	cv.setBounds(x,410,100,200);
         	JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,615,100,50);
+			jBut.setActionCommand(weaponCards.get(i).getModel().toString());
         	canvas.add(jBut);       	
         	canvas.add(cv);
         	weapButGroup.add(jBut);
         	x+=110;
         }
-		JButton confirmButton = new JButton("confirm");    //Button
-		confirmButton.setBounds(325, 700, 150, 50);
+		suggestConfirmButton = new JButton("confirm");    //Button
+		suggestConfirmButton.setBounds(325, 700, 150, 50);
 		//Add components to the content pane
 		canvas.add(label);
 		canvas.add(textLabel);
 		canvas.add(textLabel2);
-		canvas.add(confirmButton);
+		canvas.add(suggestConfirmButton);
 		makeSuggestionScreen.setContentPane(canvas);
 	}
 
+	/**
+	 * create accusation inquiry view screen
+	 */
 	public void accusationInquiryView() {
 		accusationInquiryScreen = new JFrame("Want To Choose An Accusation?");
 		accusationInquiryScreen.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
@@ -208,6 +236,55 @@ public class GameView {
 		accusationInquiryScreen.setContentPane(canvas);
 	}
 
+	/**
+	 * create no refute card found screen
+	 */
+	public void noRefuteCardFoundScreen() {
+		noRefuteCardFoundScreen = new JFrame("No refute card found");
+		noRefuteCardFoundScreen.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
+		noRefuteCardFoundScreen.setSize(new Dimension(400, 400));
+		JPanel canvas = new JPanel();
+		canvas.setLayout(new BoxLayout(canvas, BoxLayout.Y_AXIS));
+		//add text
+		JLabel title = new JLabel("No refute card found");
+		title.setFont(title.getFont().deriveFont(25.0f));
+		JLabel text = new JLabel("Suggestions added to accusations");
+
+		noRefuteBackButton = new JButton("Back");
+		noRefuteBackButton.setSize(new Dimension(50, 25));
+
+		canvas.add(title);
+		canvas.add(text);
+		canvas.add(noRefuteBackButton);
+
+		noRefuteCardFoundScreen.setContentPane(canvas);
+	}
+
+	/**
+	 *
+	 */
+	public void refuteCardFoundScreen() {
+		refuteCardFoundScreen = new JFrame("Refute card found");
+		refuteCardFoundScreen.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
+		refuteCardFoundScreen.setSize(new Dimension(400, 400));
+		//set layout to box
+		JPanel canvas = new JPanel();
+		canvas.setLayout(new BoxLayout(canvas, BoxLayout.Y_AXIS));
+		//add text
+		JLabel title = new JLabel("Refute card found!");
+		title.setFont(title.getFont().deriveFont(25.0f));
+		refuteCard = new JLabel();
+
+		refuteBackButton = new JButton("Back");
+		refuteBackButton.setSize(new Dimension(50, 25));
+
+		canvas.add(title);
+		canvas.add(refuteCard);
+		canvas.add(refuteBackButton);
+
+		refuteCardFoundScreen.setContentPane(canvas);
+	}
+
 	public void showOptions() {
 		String text = "Click the Dice to roll it!\n"
 				+ "-------------------------------\n"
@@ -219,8 +296,21 @@ public class GameView {
 		players.add(p);
 	}**/
 
+	//for calling screens to the game controller
 	public JFrame getMakeSuggestionScreen() { return  makeSuggestionScreen; }
 	public JFrame getAccusationInquiryScreen() { return accusationInquiryScreen; }
+	public JFrame getNoRefuteCardFoundScreen() { return noRefuteCardFoundScreen; }
+	public JFrame getRefuteCardFoundScreen() { return refuteCardFoundScreen; }
+
+	//suggestion screen components
+	public ButtonGroup getCharButGroup() { return charButGroup; }
+	public ButtonGroup getWeapButGroup() { return weapButGroup; }
+	public JButton getSuggestConfirmButton() { return suggestConfirmButton;}
+
+	//no refute card found components
+	public JButton getNoRefuteBackButton() { return noRefuteBackButton; }
+	public JButton getRefuteBackButton() { return refuteBackButton; }
+	public void setRefuteCard(JLabel card) { this.refuteCard = card; }
 
 	public JButton getRollDiceButton() {
 		return rollDiceButton;
