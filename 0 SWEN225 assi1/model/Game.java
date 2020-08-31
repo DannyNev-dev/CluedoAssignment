@@ -1,5 +1,5 @@
 package model;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+//import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.awt.Point;
 import java.io.*;
@@ -97,7 +97,7 @@ public class Game
 				System.out.println("ERROR: invalid character Please type down a character");
 			}
 		}
-		*/
+		 */
 
 		for(int i = 0; i < 6; i++) {
 			if(i <= numPlayers-1) {
