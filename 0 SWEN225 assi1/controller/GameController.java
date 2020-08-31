@@ -48,7 +48,7 @@ public class GameController {
 		} catch(IOException e) {
 			System.out.println("ERROR: MAP FILE NOT FOUND");
 		}
-		
+
 		cards = new ArrayList<CardController>();
 		initializeCards(); //not implemented, need to make sure model game is initialized prior to view related calls
 
@@ -74,10 +74,14 @@ public class GameController {
 
 		gv.suggestionView();	//create suggestion screen for later
 		gv.accusationInquiryView();	//create accusation inquiry screen for later
+		gv.chooseAccusationView();
 		gv.noRefuteCardFoundScreen();	//create no refute card found screen for later
 		gv.refuteCardFoundScreen();		//create refute card found screen for later
+
 		//add the listeners
 		addSuggestScreenListeners();
+		addAccusationInquiryListeners();
+		addChooseAccusationListeners();
 		addNoRefuteFoundListeners();
 		addRefuteFoundListeners();
 		addNoRefuteFoundListeners();
@@ -117,21 +121,21 @@ public class GameController {
 				boolean doMove = true;
 				char charPressed = ' ';
 				switch(e.getKeyCode()) {
-					case KeyEvent.VK_W:	//up
-						charPressed = 'w';
-						break;
-					case KeyEvent.VK_A:	//left
-						charPressed = 'a';
-						break;
-					case KeyEvent.VK_S:
-						charPressed = 's';
-						break;
-					case KeyEvent.VK_D:
-						charPressed = 'd';
-						break;
-					default:
-						doMove = false;
-						System.out.println("Invalid move");
+				case KeyEvent.VK_W:	//up
+					charPressed = 'w';
+					break;
+				case KeyEvent.VK_A:	//left
+					charPressed = 'a';
+					break;
+				case KeyEvent.VK_S:
+					charPressed = 's';
+					break;
+				case KeyEvent.VK_D:
+					charPressed = 'd';
+					break;
+				default:
+					doMove = false;
+					System.out.println("Invalid move");
 				}
 				if(doMove && (currentlyMoving)) {
 					System.out.println("movesLeft = "+movesLeft);
@@ -224,6 +228,67 @@ public class GameController {
 	}
 
 	/**
+	 * key listeners for the accusation inquiry screen
+	 */
+	private void addAccusationInquiryListeners() {
+		// - incomplete
+		//yes button listener
+		gv.getAccusationInquiryYesButton().addActionListener(e ->{
+			//close accusation inquiry state
+			gv.getAccusationInquiryScreen().setFocusable(false);
+			gv.getAccusationInquiryScreen().setVisible(false);
+
+			//go to choose accusation state
+			gv.getChooseAccusationScreen().setFocusable(true);
+			gv.getChooseAccusationScreen().setVisible(true);
+
+		});
+
+		//no button listener
+		gv.getAccusationInquiryNoButton().addActionListener(e ->{
+			//close accusation inquiry state
+			gv.getAccusationInquiryScreen().setFocusable(false);
+			gv.getAccusationInquiryScreen().setVisible(false);
+
+			// - exit turn state 
+			// - go to next player (gamePlay state) 
+
+		});
+	}
+
+	/**
+	 * key listeners for the choose accusation screen
+	 */
+	private void addChooseAccusationListeners() {
+		// - incomplete
+		//confirm button listener
+		gv.getAccusationConfirmButton().addActionListener(e ->{
+
+			//close choose accusation state
+			gv.getChooseAccusationScreen().setFocusable(false);
+			gv.getChooseAccusationScreen().setVisible(false);
+			
+			// - if accusation matches solution
+			// - player wins
+			
+			// - game over
+			//close game screen
+			gv.getGameScreen().setFocusable(false);
+			gv.getGameScreen().setVisible(false);
+			//go to game over state
+			gv.getGameOverScreen().setFocusable(true);
+			gv.getGameOverScreen().setVisible(true);
+			
+			// - if accusation does not match
+			//player cannot win
+			currentPlayer.getModel().setCanWin(false);
+			
+			// - exit turn state 
+			// - go to next player (gamePlay state) 
+		});
+	}
+
+	/**
 	 * key listeners for the no refute card found screen
 	 */
 	private void addNoRefuteFoundListeners() {
@@ -269,15 +334,15 @@ public class GameController {
 					JMenuItem menuItem1 = (JMenuItem) comp;
 					System.out.println("MenuItem:" + menuItem1.getText());
 					switch (menuItem1.getText()) {
-						case "Reset":
-							menuItem1.addActionListener(e -> {resetGame();});
-							break;
-						case "NewGame":
-							menuItem1.addActionListener(e -> {newGame();});
-							break;
-						case "Controls":
-							menuItem1.addActionListener(e -> {showControlScreen();});
-							break;
+					case "Reset":
+						menuItem1.addActionListener(e -> {resetGame();});
+						break;
+					case "NewGame":
+						menuItem1.addActionListener(e -> {newGame();});
+						break;
+					case "Controls":
+						menuItem1.addActionListener(e -> {showControlScreen();});
+						break;
 					}
 				}
 			}
@@ -326,6 +391,7 @@ public class GameController {
 		}
 		return cc;
 	}
+
 	public ArrayList<CardView> getRoomCards(){
 		return null;
 	}
