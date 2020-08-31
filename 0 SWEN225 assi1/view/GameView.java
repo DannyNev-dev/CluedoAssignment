@@ -35,6 +35,8 @@ public class GameView {
 	JFrame accusationInquiryScreen;
 	JFrame refuteCardFoundScreen;
 	JFrame noRefuteCardFoundScreen;
+	JFrame chooseAccusationScreen;
+	JFrame gameOverScreen;
 
 	//components for the game screen
 	JButton rollDiceButton = new JButton("Roll Dice");
@@ -46,6 +48,13 @@ public class GameView {
 	ButtonGroup charButGroup;
 	ButtonGroup weapButGroup;
 	JButton suggestConfirmButton;
+
+	//components for the accusations inquiry screen
+	JButton accusationInquiryYesButton;
+	JButton accusationInquiryNoButton;
+
+	//components for the choose accusation screen
+	JButton accusationConfirmButton;
 
 	//components for the no refute card found screen
 	JButton noRefuteBackButton;
@@ -155,6 +164,27 @@ public class GameView {
 	public JFrame getMainMenu() {
 		return this.mainMenu;
 	}
+	
+	/**
+	 * create game over view screen
+	 */
+	public void gameOverView() {
+		gameOverScreen = new JFrame("Game Over");
+		gameOverScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameOverScreen.setSize(600,400);
+		gameOverScreen.setVisible(true);
+        JPanel canvas = new JPanel(null);
+        
+		JLabel label = new JLabel("Game Over");
+		label.setFont(label.getFont().deriveFont(25.0f));
+		label.setBounds(210, 50, 400, 50);
+		JLabel textLabel = new JLabel("Player: " + currentPlayer.getName() + " Wins!");
+		textLabel.setBounds(210, 150, 200, 50);
+		
+		canvas.add(label);
+		canvas.add(textLabel);
+		gameOverScreen.setContentPane(canvas);
+	}
 
 	/**
 	 * create suggestion view screen which is for making suggestions
@@ -175,32 +205,32 @@ public class GameView {
 		textLabel.setBounds(10, 60, 200, 50);
 		// character cards
 		charButGroup = new ButtonGroup();
-        int x = 10;
-        for(int i = 0; i < characterCards.size(); i++) {
-        	CardView cv = characterCards.get(i).getView();
-        	cv.setBounds(x,70,100,200);
-        	JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,275,100,50);
-        	jBut.setActionCommand(characterCards.get(i).getModel().toString());
-        	canvas.add(jBut);        	
-        	canvas.add(cv);
-        	charButGroup.add(jBut);
-        	x+=110;
-        }
+		int x = 10;
+		for(int i = 0; i < characterCards.size(); i++) {
+			CardView cv = characterCards.get(i).getView();
+			cv.setBounds(x,70,100,200);
+			JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,275,100,50);
+			jBut.setActionCommand(characterCards.get(i).getModel().toString());
+			canvas.add(jBut);        	
+			canvas.add(cv);
+			charButGroup.add(jBut);
+			x+=110;
+		}
 		JLabel textLabel2 = new JLabel("Select a weapon:");
 		textLabel2.setBounds(10, 400, 200, 50);
 		// weapon cards
 		weapButGroup = new ButtonGroup();
-        x = 10;
-        for(int i = 0; i < weaponCards.size(); i++) {
-        	CardView cv = weaponCards.get(i).getView();
-        	cv.setBounds(x,410,100,200);
-        	JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,615,100,50);
+		x = 10;
+		for(int i = 0; i < weaponCards.size(); i++) {
+			CardView cv = weaponCards.get(i).getView();
+			cv.setBounds(x,410,100,200);
+			JRadioButton jBut = new JRadioButton(); jBut.setText(cv.getName()); jBut.setBounds(x,615,100,50);
 			jBut.setActionCommand(weaponCards.get(i).getModel().toString());
-        	canvas.add(jBut);       	
-        	canvas.add(cv);
-        	weapButGroup.add(jBut);
-        	x+=110;
-        }
+			canvas.add(jBut);       	
+			canvas.add(cv);
+			weapButGroup.add(jBut);
+			x+=110;
+		}
 		suggestConfirmButton = new JButton("confirm");    //Button
 		suggestConfirmButton.setBounds(325, 700, 150, 50);
 		//Add components to the content pane
@@ -224,14 +254,14 @@ public class GameView {
 		label.setFont(label.getFont().deriveFont(25.0f));
 		label.setBounds(150, 10, 600, 50);
 
-		JButton yesButton = new JButton("Yes");
-		yesButton.setBounds(150, 200, 100, 50);
-		JButton noButton = new JButton("No");
-		noButton.setBounds(500, 200, 100, 50);
+		accusationInquiryYesButton = new JButton("Yes");
+		accusationInquiryYesButton.setBounds(150, 200, 100, 50);
+		accusationInquiryNoButton = new JButton("No");
+		accusationInquiryNoButton.setBounds(500, 200, 100, 50);
 
 		canvas.add(label);
-		canvas.add(yesButton);
-		canvas.add(noButton);
+		canvas.add(accusationInquiryYesButton);
+		canvas.add(accusationInquiryNoButton);
 
 		accusationInquiryScreen.setContentPane(canvas);
 	}
@@ -285,6 +315,41 @@ public class GameView {
 		refuteCardFoundScreen.setContentPane(canvas);
 	}
 
+	/**
+	 * create choose accusation view screen
+	 */
+	public void chooseAccusationView() {
+		// - incomplete
+		// - still need to add the accusations in card form
+		chooseAccusationScreen = new JFrame("Choose accusation");
+		chooseAccusationScreen.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
+		chooseAccusationScreen.setSize(new Dimension(800, 800));
+
+		JPanel canvas = new JPanel(null);
+
+		JLabel label = new JLabel("Time to make an accusation:");
+		label.setFont(label.getFont().deriveFont(25.0f));
+		label.setBounds(210, 10, 400, 50);
+
+		// - need to set to length of accusation list
+		for(int i = 0; i < 3; i++) {
+			int num = i+1;
+			JLabel textLabel = new JLabel("Accusation " + num + ":");
+			JRadioButton jBut = new JRadioButton();
+			textLabel.setBounds(10, 60+(i*200), 200, 50);
+			jBut.setBounds(10, 100+(i*200), 200, 50);
+			canvas.add(textLabel);
+			canvas.add(jBut);
+		}
+
+		accusationConfirmButton = new JButton(" confirm ");    //Button
+		accusationConfirmButton.setBounds(325, 700, 150, 50);
+
+		canvas.add(label);
+		canvas.add(accusationConfirmButton);
+		chooseAccusationScreen.setContentPane(canvas);
+	}
+
 	public void showOptions() {
 		String text = "Click the Dice to roll it!\n"
 				+ "-------------------------------\n"
@@ -295,17 +360,27 @@ public class GameView {
 	/**public void addPlayerView(PlayerView p) {
 		players.add(p);
 	}**/
+	
+	public JFrame getGameOverScreen() {return gameOverScreen;}
 
 	//for calling screens to the game controller
 	public JFrame getMakeSuggestionScreen() { return  makeSuggestionScreen; }
 	public JFrame getAccusationInquiryScreen() { return accusationInquiryScreen; }
 	public JFrame getNoRefuteCardFoundScreen() { return noRefuteCardFoundScreen; }
 	public JFrame getRefuteCardFoundScreen() { return refuteCardFoundScreen; }
+	public JFrame getChooseAccusationScreen() {return chooseAccusationScreen;}
 
 	//suggestion screen components
 	public ButtonGroup getCharButGroup() { return charButGroup; }
 	public ButtonGroup getWeapButGroup() { return weapButGroup; }
 	public JButton getSuggestConfirmButton() { return suggestConfirmButton;}
+
+	//accusation inquiry screen components
+	public JButton getAccusationInquiryYesButton() {return accusationInquiryYesButton;}
+	public JButton getAccusationInquiryNoButton() {return accusationInquiryNoButton;}
+
+	//choose accusation screen components
+	public JButton getAccusationConfirmButton() {return accusationConfirmButton;}
 
 	//no refute card found components
 	public JButton getNoRefuteBackButton() { return noRefuteBackButton; }
