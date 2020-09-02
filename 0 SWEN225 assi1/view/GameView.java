@@ -54,6 +54,7 @@ public class GameView {
 	JButton accusationInquiryNoButton;
 
 	//components for the choose accusation screen
+	ButtonGroup accusationsButGroup;
 	JButton accusationConfirmButton;
 
 	//components for the no refute card found screen
@@ -164,7 +165,7 @@ public class GameView {
 	public JFrame getMainMenu() {
 		return this.mainMenu;
 	}
-	
+
 	/**
 	 * create game over view screen
 	 */
@@ -173,14 +174,20 @@ public class GameView {
 		gameOverScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameOverScreen.setSize(600,400);
 		gameOverScreen.setVisible(true);
-        JPanel canvas = new JPanel(null);
-        
+		JPanel canvas = new JPanel(null);
+
 		JLabel label = new JLabel("Game Over");
 		label.setFont(label.getFont().deriveFont(25.0f));
 		label.setBounds(210, 50, 400, 50);
-		JLabel textLabel = new JLabel("Player: " + currentPlayer.getName() + " Wins!");
-		textLabel.setBounds(210, 150, 200, 50);
-		
+		JLabel textLabel = null;
+		if(currentPlayer.getModel().getCanWin()) { //if the player can win 
+			textLabel = new JLabel("Player: " + currentPlayer.getName() + " Wins!");
+			textLabel.setBounds(210, 150, 200, 50);
+		}else { //if the player can't win 
+			textLabel = new JLabel("Everyone Lost");
+			textLabel.setBounds(235, 150, 200, 50);
+		}
+
 		canvas.add(label);
 		canvas.add(textLabel);
 		gameOverScreen.setContentPane(canvas);
@@ -320,26 +327,40 @@ public class GameView {
 	 */
 	public void chooseAccusationView() {
 		// - incomplete
-		// - still need to add the accusations in card form
+		// - sort out spacing of elements 
+		// - maybe get rid of textLabel.. use jBut.setText instead
 		chooseAccusationScreen = new JFrame("Choose accusation");
 		chooseAccusationScreen.setDefaultCloseOperation(0);	//so user doesn't close window prematurely
 		chooseAccusationScreen.setSize(new Dimension(800, 800));
-
 		JPanel canvas = new JPanel(null);
+		ArrayList<CardController> accusationCards = gc.getAccusationCards();
 
 		JLabel label = new JLabel("Time to make an accusation:");
 		label.setFont(label.getFont().deriveFont(25.0f));
 		label.setBounds(210, 10, 400, 50);
 
-		// - need to set to length of accusation list
-		for(int i = 0; i < 3; i++) {
+		accusationsButGroup = new ButtonGroup();
+		for(int i = 0; i < (accusationCards.size()/3); i++) { //for number of accusations
 			int num = i+1;
 			JLabel textLabel = new JLabel("Accusation " + num + ":");
+			//accusation (room, character and weapon card)
+			CardView cv1 = accusationCards.get(i).getView();
+			cv1.setBounds(10,70,100,200);
+			CardView cv2 = accusationCards.get(i+1).getView();
+			cv2.setBounds(20,70,100,200);
+			CardView cv3 = accusationCards.get(i+2).getView();
+			cv3.setBounds(30,70,100,200);
+
 			JRadioButton jBut = new JRadioButton();
+			jBut.setActionCommand(Integer.toString(i));
 			textLabel.setBounds(10, 60+(i*200), 200, 50);
 			jBut.setBounds(10, 100+(i*200), 200, 50);
 			canvas.add(textLabel);
 			canvas.add(jBut);
+			canvas.add(cv1);
+			canvas.add(cv2);
+			canvas.add(cv3);
+			accusationsButGroup.add(jBut);
 		}
 
 		accusationConfirmButton = new JButton(" confirm ");    //Button
@@ -360,7 +381,7 @@ public class GameView {
 	/**public void addPlayerView(PlayerView p) {
 		players.add(p);
 	}**/
-	
+
 	public JFrame getGameOverScreen() {return gameOverScreen;}
 
 	//for calling screens to the game controller
@@ -380,6 +401,7 @@ public class GameView {
 	public JButton getAccusationInquiryNoButton() {return accusationInquiryNoButton;}
 
 	//choose accusation screen components
+	public ButtonGroup getAccusationsButGroup() {return accusationsButGroup;}
 	public JButton getAccusationConfirmButton() {return accusationConfirmButton;}
 
 	//no refute card found components
