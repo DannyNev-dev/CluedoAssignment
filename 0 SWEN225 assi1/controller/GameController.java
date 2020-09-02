@@ -31,6 +31,11 @@ public class GameController {
 	boolean currentlyMoving = false;	//for checking  if in move player state
 
 	PlayerView currentPlayer;
+	int playerNum;
+	List<PlayerView> players;
+	int playersOut = 0;
+	String selectedAccusation = null;
+
 	//for move state
 	int movesLeft = -1;	//moves left for current player
 	List<Point> moveLog = new ArrayList<>();
@@ -45,6 +50,7 @@ public class GameController {
 	public GameController(int playerNumber) {
 		try {
 			gm = new Game(playerNumber);
+			playerNum = playerNumber;
 		} catch(IOException e) {
 			System.out.println("ERROR: MAP FILE NOT FOUND");
 		}
@@ -52,7 +58,7 @@ public class GameController {
 		cards = new ArrayList<CardController>();
 		initializeCards(); //not implemented, need to make sure model game is initialized prior to view related calls
 
-		List<PlayerView> players = new ArrayList<PlayerView>();
+		players = new ArrayList<PlayerView>();
 
 		//create players
 		for(int i = 0; i < gm.PLAYERS.length; i++) {
@@ -102,6 +108,8 @@ public class GameController {
 			movesLeft = diceNumbers[0]+diceNumbers[1];	//get number of moves
 			System.out.println("movesLeft = "+movesLeft);
 			currentlyMoving = true;	//change state of game
+		}else { //they can't win and so go to the next player's turn
+			nextPlayersTurn();
 		}
 	}
 
@@ -231,7 +239,6 @@ public class GameController {
 	 * key listeners for the accusation inquiry screen
 	 */
 	private void addAccusationInquiryListeners() {
-		// - incomplete
 		//yes button listener
 		gv.getAccusationInquiryYesButton().addActionListener(e ->{
 			//close accusation inquiry state
@@ -250,9 +257,8 @@ public class GameController {
 			gv.getAccusationInquiryScreen().setFocusable(false);
 			gv.getAccusationInquiryScreen().setVisible(false);
 
-			// - exit turn state 
-			// - go to next player (gamePlay state) 
-
+			//next player's turn
+			nextPlayersTurn();
 		});
 	}
 
@@ -260,31 +266,54 @@ public class GameController {
 	 * key listeners for the choose accusation screen
 	 */
 	private void addChooseAccusationListeners() {
-		// - incomplete
+		//add radioButton listeners
+		Enumeration<AbstractButton> iterator = gv.getAccusationsButGroup().getElements();
+		while(iterator.hasMoreElements()) {
+			AbstractButton b = iterator.nextElement();
+			b.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					selectedAccusation = b.getActionCommand();
+				}
+			});
+		}
+
+		int accusationIndex = Integer.parseInt(selectedAccusation);
+
 		//confirm button listener
 		gv.getAccusationConfirmButton().addActionListener(e ->{
 
-			//close choose accusation state
-			gv.getChooseAccusationScreen().setFocusable(false);
-			gv.getChooseAccusationScreen().setVisible(false);
-			
-			// - if accusation matches solution
-			// - player wins
-			
-			// - game over
-			//close game screen
-			gv.getGameScreen().setFocusable(false);
-			gv.getGameScreen().setVisible(false);
-			//go to game over state
-			gv.getGameOverScreen().setFocusable(true);
-			gv.getGameOverScreen().setVisible(true);
-			
-			// - if accusation does not match
-			//player cannot win
-			currentPlayer.getModel().setCanWin(false);
-			
-			// - exit turn state 
-			// - go to next player (gamePlay state) 
+			if(selectedAccusation != null) { //checks there is an accusation selected
+				//close choose accusation state
+				gv.getChooseAccusationScreen().setFocusable(false);
+				gv.getChooseAccusationScreen().setVisible(false);
+
+				if(gm.accusations.get(accusationIndex).toString().equals(gm.envelope.toString())) { //if accusation matches solution, player wins, game over
+					//close game screen
+					gv.getGameScreen().setFocusable(false);
+					gv.getGameScreen().setVisible(false);
+					//go to game over state
+					gv.getGameOverScreen().setFocusable(true);
+					gv.getGameOverScreen().setVisible(true);
+				}else { //else accusation does not match solution
+					//player cannot win
+					if(playersOut == playerNum) { //all player cannot win (have made a wrong accusation)
+						currentPlayer.getModel().setCanWin(false);
+						//close game screen
+						gv.getGameScreen().setFocusable(false);
+						gv.getGameScreen().setVisible(false);
+						//go to game over state
+						gv.getGameOverScreen().setFocusable(true);
+						gv.getGameOverScreen().setVisible(true);
+					}else { //not all players are out
+						//increment playersOut by 1
+						playersOut++;
+						//next player's turn
+						nextPlayersTurn();
+					}
+				}
+			}
+
 		});
 	}
 
@@ -349,6 +378,23 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * Goes to the next players turn
+	 */
+	public void nextPlayersTurn() {
+		for(int i = 0; i < playerNum; i++) {
+			if(currentPlayer.getName() == players.get(i).getName()) { //if the current player = the player in the list
+				if(i == (playerNum - 1)) { //if the current player is the last player
+					currentPlayer = players.get(0); //current player = first player
+				}
+				currentPlayer = players.get(i+1); //current player = next player in the list
+			}
+		}
+
+		gv.getRollDiceButton().setEnabled(true);
+		rollDice();
+	}
+
 	private void showControlScreen() {
 		this.gv.showOptions(); //tells the view to show the options dialog
 	}
@@ -387,6 +433,19 @@ public class GameController {
 			String name = cardC.model.toString();
 			if(name=="candlestick"||name=="dagger"||name=="lead pipe"||name=="spanner"||name=="revolver"||name=="rope"){
 				cc.add(cardC);
+			}
+		}
+		return cc;
+	}
+
+	public ArrayList<CardController> getAccusationCards(){
+		ArrayList<CardController> cc = new ArrayList<>();
+		for(int i = 0; i < gm.getAccusations().size(); i++) { //for all the accusations
+			for(CardController c : cards) { //for all the cards
+				String name = c.model.toString();
+				if(gm.getAccusations().get(i).toString() == name) { 
+					cc.add(c);
+				}
 			}
 		}
 		return cc;
