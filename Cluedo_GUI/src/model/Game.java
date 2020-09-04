@@ -76,28 +76,7 @@ public class Game
 			boardData = readBoardMapFile("src/boardMap");
 		} catch(IOException e) {
 			throw e;
-		}  
-		/*
-		System.out.println("Welcome to a Text-Based Cluedo");
-		System.out.println("Designed by Team 12");
-		System.out.println();
-
-		//create players
-		Scanner s; // = new Scanner(System.in);
-		int numPlayers = 0;
-		//boolean hasError = true;
-		while(numPlayers < 3 || numPlayers > 6) {
-			System.out.println("Please state number of players from 3 to 6:");
-			s = new Scanner(System.in); //get input
-			String input = s.next();
-			try {
-				numPlayers = parseInt(input);
-				//check that input is valid
-			} catch(NumberFormatException e) {
-				System.out.println("ERROR: invalid character Please type down a character");
-			}
 		}
-		 */
 
 		for(int i = 0; i < 6; i++) {
 			if(i <= numPlayers-1) {
@@ -113,17 +92,10 @@ public class Game
 		//set up board now
 		System.out.println();
 		System.out.println("Board created:");
-		createBoard(boardData); 
-		System.out.println();
-		System.out.println("---------------------------");
+		createBoard(boardData);
 
 		initDeck();
 		dealCards(); //give out deck to the players
-
-		//		//prints all players hands
-		//		for(Player p : PLAYERS) {
-		//			System.out.println(p.getHand());
-		//		}
 	}
 
 	public void gamePlay() {
@@ -184,7 +156,6 @@ public class Game
 	 */
 	public void createBoard(String[] boardData) {
 		board = new Board(boardData);  //initialise board
-		board.printBoard();
 	}
 
 	/**
