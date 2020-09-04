@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class CardView extends JLabel{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        if(image!=null) {setIcon(new ImageIcon(image));}
+        if(image!=null) {setIcon(new ImageIcon(image.getScaledInstance(70, 100, Image.SCALE_SMOOTH)));}
     }
 
 }

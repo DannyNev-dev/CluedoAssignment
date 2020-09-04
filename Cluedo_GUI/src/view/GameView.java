@@ -130,7 +130,7 @@ public class GameView {
 	 */
 	private JFrame createGameFrame() {
 		JFrame f = new JFrame("Game");
-		f.setSize(new Dimension(900,700));
+		f.setSize(new Dimension(990,800));
 		f.setJMenuBar(createMenu());
 		f.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -168,10 +168,12 @@ public class GameView {
 			}
 		}
 		//at beginning of game draw first dice image
+		JPanel dicePanel = new JPanel();
 		firstDice.setIcon(diceImages.get(0));
 		secondDice.setIcon(diceImages.get(0));
-		currentPlayer.add(firstDice);
-		currentPlayer.add(secondDice);
+		dicePanel.add(firstDice);
+		dicePanel.add(secondDice);
+		currentPlayer.add(dicePanel);
 		currentPlayer.add(rollDiceButton);
 
 		//draw player's cards
@@ -209,10 +211,6 @@ public class GameView {
 		mb.add(helpMenu);
 		return mb;
 	}
-
-	/*public void setGc(GameController gc) {
-		this.gc = gc;
-	}*/
 
 	/**
 	 * Gets the game screen.
@@ -580,6 +578,30 @@ public class GameView {
 	 */
 	public BoardView getBoardView() {
 		return boardView;
+	}
+
+	/**
+	 * Gets the JLabel for the first dice
+	 * @return first dice label
+	 */
+	public JLabel getFirstDice() {
+		return firstDice;
+	}
+
+	/**
+	 * Gets the JLabel for the second dice
+	 * @return second dice label
+	 */
+	public JLabel getSecondDice() {
+		return secondDice;
+	}
+
+	/**
+	 * Gets the list of images for the dice
+	 * @return
+	 */
+	public List<ImageIcon> getDiceImages() {
+		return diceImages;
 	}
 
 	/**

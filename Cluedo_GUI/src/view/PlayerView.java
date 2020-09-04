@@ -18,7 +18,7 @@ public class PlayerView extends JPanel {
 	private static final long serialVersionUID = 1280946548453444722L;
 	
 	/** The cards. */
-	List<CardView> cards;
+	JPanel cards;
 	
 	/** The model. */
 	Player model;
@@ -34,12 +34,15 @@ public class PlayerView extends JPanel {
     public PlayerView(Player player){
         super();
         this.model = player;
-        setLayout(new GridLayout(4, 2));
-        add(new JLabel(player.getName()+"'s hand:"));
-        //add(new JLabel());
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        cards = new JPanel();
+        cards.setLayout(new GridLayout(4, 2));
+        cards.add(new JLabel(player.getName()+"'s hand:"));
+        cards.add(new JLabel());    //add extra space for the first row
         for(int i = 0; i < player.getHand().size(); i++) {
-            add(new CardView(player.getHand().get(i).getName(true)));
+            cards.add(new CardView(player.getHand().get(i).getName(true)));
         }
+        add(cards);
     }
 
     /**
