@@ -22,8 +22,8 @@ public class Game
 	private List<Card> cardsForViewer = new ArrayList<>();
 	//private List<Tile> tiles;
 	private Stack<Card> cards;
-	private List<Card> envelope;  //order of solution is character, weapon then room
-	private List<Card[]> accusations;
+	public List<Card> envelope;  //order of solution is character, weapon then room
+	public List<Card[]> accusations;
 
 	private Boolean gameOver = false;
 
