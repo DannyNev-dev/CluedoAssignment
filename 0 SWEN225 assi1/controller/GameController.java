@@ -280,12 +280,13 @@ public class GameController {
 			});
 		}
 
-		int accusationIndex = Integer.parseInt(selectedAccusation);
 
 		//confirm button listener
 		gv.getAccusationConfirmButton().addActionListener(e ->{
 
 			if(selectedAccusation != null) { //checks there is an accusation selected
+
+				int accusationIndex = Integer.parseInt(selectedAccusation);
 				//close choose accusation state
 				gv.getChooseAccusationScreen().setFocusable(false);
 				gv.getChooseAccusationScreen().setVisible(false);

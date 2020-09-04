@@ -78,7 +78,7 @@ public class GameView {
 
 	private JFrame createGameFrame() {
 		JFrame f = new JFrame("Game");
-		f.setSize(new Dimension(1200, 1200));
+		f.setSize(new Dimension(900,700));
 		f.setJMenuBar(createMenu());
 		f.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -96,8 +96,8 @@ public class GameView {
 		constraints.gridy = 1;
 		constraints.ipady = 0;
 		//add JPanel for dice
-		JPanel rollDice = new JPanel();
-		rollDice.setLayout(new BoxLayout(rollDice, BoxLayout.X_AXIS));
+		//JPanel rollDice = new JPanel();
+		//rollDice.setLayout(new BoxLayout(rollDice, BoxLayout.X_AXIS));
 		//add components
 		//dice pictures
 		firstDice = new JLabel();
@@ -109,7 +109,7 @@ public class GameView {
 		for(int i = 1; i < 7; i++) {
 			try {
 				dicePictureBuffer = ImageIO.read(new File("DiceFaces//Dice_"+String.valueOf(i)+".png"));
-				diceImages.add(new ImageIcon(dicePictureBuffer.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+				diceImages.add(new ImageIcon(dicePictureBuffer.getScaledInstance(40, 40, Image.SCALE_SMOOTH)));
 			} catch (IOException e) {
 				System.out.println("dice picture not found!");
 				return null;
@@ -118,16 +118,15 @@ public class GameView {
 		//at beginning of game draw first dice image
 		firstDice.setIcon(diceImages.get(0));
 		secondDice.setIcon(diceImages.get(0));
-		rollDice.add(firstDice);
-		rollDice.add(secondDice);
-		rollDice.add(rollDiceButton);
-		f.add(rollDice, constraints);
+		currentPlayer.add(firstDice);
+		currentPlayer.add(secondDice);
+		currentPlayer.add(rollDiceButton);
 
 		//draw player's cards
 		constraints.gridx = 2;
 		constraints.gridy = 0;
-		constraints.ipadx = 100;
-		constraints.ipady = 800;
+		constraints.ipadx = 50;
+		constraints.ipady = 700;
 		f.add(currentPlayer);
 
 		return f;

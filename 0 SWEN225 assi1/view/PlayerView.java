@@ -26,7 +26,7 @@ public class PlayerView extends JPanel {
         this.model = player;
         setLayout(new GridLayout(4, 2));
         add(new JLabel(player.getName()+"'s hand:"));
-        add(new JLabel());
+        //add(new JLabel());
         for(int i = 0; i < player.getHand().size(); i++) {
             add(new CardView(player.getHand().get(i).getName(true)));
         }
