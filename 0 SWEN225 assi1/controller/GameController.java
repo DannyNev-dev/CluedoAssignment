@@ -30,7 +30,9 @@ public class GameController {
 
 	boolean currentlyMoving = false;	//for checking  if in move player state
 
-	PlayerView currentPlayer;
+	PlayerView currentPlayer; 
+	
+	//for choose accusation state
 	int playerNum;
 	List<PlayerView> players;
 	int playersOut = 0;
