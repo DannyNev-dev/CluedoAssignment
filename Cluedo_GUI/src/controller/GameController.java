@@ -112,7 +112,7 @@ public class GameController {
 
 		gv.suggestionView();	//create suggestion screen for later
 		gv.accusationInquiryView();	//create accusation inquiry screen for later
-		gv.chooseAccusationView();
+		gv.chooseAccusationView();	//create choose accusation screen for later
 		gv.noRefuteCardFoundScreen();	//create no refute card found screen for later
 		gv.refuteCardFoundScreen();		//create refute card found screen for later
 
@@ -124,8 +124,7 @@ public class GameController {
 		addRefuteFoundListeners();
 		addNoRefuteFoundListeners();
 
-		//start game
-		System.out.println("start game");
+		//start game now
 	}
 
 	/**
@@ -295,6 +294,7 @@ public class GameController {
 			gv.getAccusationInquiryScreen().setFocusable(false);
 			gv.getAccusationInquiryScreen().setVisible(false);
 
+			gv.getGameScreen().setFocusable(true);
 			//next player's turn
 			nextPlayersTurn();
 		});
@@ -369,6 +369,12 @@ public class GameController {
 			gv.getNoRefuteCardFoundScreen().setVisible(false);
 
 			//go to accusation inquiry state
+			//disable yes button if no accusations exist
+			if(gm.getAccusations().isEmpty()) {
+				gv.getAccusationInquiryYesButton().setEnabled(false);
+			} else {
+				gv.getAccusationInquiryYesButton().setEnabled(true);
+			}
 			gv.getAccusationInquiryScreen().setFocusable(true);
 			gv.getAccusationInquiryScreen().setVisible(true);
 
@@ -386,6 +392,12 @@ public class GameController {
 			gv.getRefuteCardFoundScreen().setVisible(false);
 
 			//go to accusation inquiry state
+			//disable yes button if no accusations exist
+			if(gm.getAccusations().isEmpty()) {
+				gv.getAccusationInquiryYesButton().setEnabled(false);
+			} else {
+				gv.getAccusationInquiryYesButton().setEnabled(true);
+			}
 			gv.getAccusationInquiryScreen().setFocusable(true);
 			gv.getAccusationInquiryScreen().setVisible(true);
 
@@ -425,16 +437,19 @@ public class GameController {
 	 */
 	public void nextPlayersTurn() {
 		for(int i = 0; i < playerNum; i++) {
-			if(currentPlayer.getName() == players.get(i).getName()) { //if the current player = the player in the list
+			if(currentPlayer.getModel().getName() == players.get(i).getModel().getName()) { //if the current player = the player in the list
 				if(i == (playerNum - 1)) { //if the current player is the last player
 					currentPlayer = players.get(0); //current player = first player
+				} else {
+					currentPlayer = players.get(i + 1); //current player = next player in the list
+					break;
 				}
-				currentPlayer = players.get(i+1); //current player = next player in the list
 			}
 		}
 
 		gv.getRollDiceButton().setEnabled(true);
-		rollDice();
+		gv.getFirstDice().setIcon(gv.getDiceImages().get(0));
+		gv.getSecondDice().setIcon(gv.getDiceImages().get(0));
 	}
 
 	/**
