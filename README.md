@@ -1,4 +1,4 @@
-# CluedoAssignmnet1
+# CluedoAssignment1
 
 A simple Text based version of the classic board game, Cluedo.
 
